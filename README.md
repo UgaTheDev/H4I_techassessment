@@ -1,42 +1,379 @@
-# 💡 Impact Team Technical Assessment Spring 2026 💡
-<img width="1388" height="500" align="center" alt="ideaCon" src="https://github.com/user-attachments/assets/a03ac938-050b-4c5c-99af-76a532ec9524" />
+# Quantum Entanglement - Interactive Learning Platform
 
+An interactive educational website exploring quantum entanglement, built for Hack4Impact IdeaCon.
 
-Congratulations on reaching the next step of the application process! This phase is the most important one in the entire process, as it assesses your ability to create a web app using both tools you're familiar with and ones you probably aren't and will have to pick up as you go. This is one of the most important skills for a web developer to cultivate.
+## Features
 
-By **Monday, December 1st, 2025 at 11:59pm**, you must fork this repository and submit a PR (pull request) to this repository with both your completed version of the app and a screen recording of you walking me through your app's features.
+- 📚 Comprehensive lessons on quantum entanglement
+- 🎯 Interactive multiple-choice quizzes with live results
+- 🤖 AI-powered short answer grading using Gemini API
+- 💬 Comment sections for discussion
+- 🎨 Beautiful, responsive design with 3D visualizations
+- 📱 Mobile-friendly interface
 
-## Your Task
-I feel like I've been a little bit too in my niche lately. A lot of the stuff I've been reading and learning about has been exclusively in fields I know a lot about. So I want to use this technical assessment as a chance for you to **teach me something new**.
+## Tech Stack
 
-To do this, I am hosting **Hack4Impact IdeaCon**! Your technical assessment will be a submission to this (fictional) event; with this framing, you will create a website that can be easily and intuitively navigated through as if it was a part of a stand in a convention. It should summarize whatever you want to teach me on an interactive, aesthetically interesting home page, but have more threads of information, pages, etc. as you see fit for those who want to learn in more detail. It will also include some interactive pieces.
+**Frontend:**
 
-In particular, your app should include the following features:
-- An interesting and beautiful frontend design with a catchy title and cool fonts and colors that looks good on any screen size.
-- A home page with a summary about the interesting thing you want to teach me about. I was originally planning for this to be purely academic (e.g. math, CS, physics, engineering) topics but I am expanding it to include anything. However, you should be able to teach about whatever you choose in a clear way and go in-depth about it. If your subject matter is particularly engaging, that will reflect positively on your application.
-- Extra pages with more detailed information on certain topics. Make your website intuitive to navigate through, both within the pages themselves and in your choice of pages. You can structure your website however you see fit.
-- A poll/quiz feature where you can check that the user is aborbing the information your website teaches about well. These quiz questions should be scattered throughout the website, and they should tell the user whether they got the answer right or not once they select it. Additionally, it should show a live count of results (like a social media poll) with the names of the users who have voted for each option. You should take time to make sure your UI for this component is intuitive to use while still including all of the features listed. A user should be able to change their result if they want, and this should be reflected in the result count.
-- A comment feature on each page where users can offer feedback or ask questions based on the lesson on the page. The home page does not need a comment section, but every other page should have one.
-- Deploy the frontend and backend if you can using some of the free deployment tools we talked about in the workshops!
+- React 18 + TypeScript
+- Vite
+- TailwindCSS + Mantine UI
+- Three.js / React Three Fiber for 3D visualizations
+- React Router for navigation
 
-You should prompt the user for their name the first time they interact with something, but then store it locally. Quiz results and comments should be stored in an external database and saved. You do not need to add account/authentication features to your website; if the user refreshes the site, you can ask for their name again when they interact with something.
+**Backend:**
 
-**If you don't finish everything on time, just submit what you have. Partial submissions will still be considered. Please try to give yourself adequate time to work on this project, though. Start it as early as you can!**
+- Node.js + Express
+- PostgreSQL for data storage
+- Google Gemini API for AI grading
 
-## Things to Consider
-This task is tough and time-intensive! Try your best with it. I am really excited to see what you come up with. Please start working on it early, and budget your time well. I am going to be strict about the deadline.
+## Setup Instructions
 
-I highly encourage you to take this opportunity to learn about and use web development tools that you are not familiar with. One of the most important skills as a web developer is to be able to understand and read documentation. Submissions that go beyond what we covered in JDT will be valued higher, but you must understand your code! You will be asked about it during your interview, if you reach that step.
+### Prerequisites
 
-I have a few pieces of advice for you:
-- Don't skimp out on the frontend. I want your sites to look pretty, so really make an effort to give them a nice visual aesthetic. You are welcome to use a UI library such as [Material UI](https://mui.com/material-ui/all-components/).
-- Feel free to use my technical assessment when I applied for Impact Team, [Our Republic](https://our-republic.vercel.app/), as a model and a guide for you. It has some of the features we didn't cover in the JDT workshops, such as multiple pages, so feel free to copy my main.jsx code from there when working to implement that. You can access the code for it [here](https://github.com/adam-godel/our-republic/).
-- You may want to look over the [Glued Trees](https://gluedtrees.com/) website I made after I worked on a research project in summer 2024. This is kind of along the lines of what I'm thinking of, but your website should look better and have a lot more features than this one does.
-  
-Most importantly, try your best to just make something you're proud of! **If you're unable to implement every feature of the site, that's okay, just submit whatever you have.** Please really try to give yourself the time you need to work on it, though.
+- Node.js 18+ and npm
+- PostgreSQL 14+ (or a free Neon/Supabase account)
+- Google Gemini API key
 
-## A Note on LLMs
-You are welcome to use LLMs to help you with anything you need for this project. However, please make sure you understand any code produced by a LLM that you use, since I may be asking you about your code during the interview, if you are invited to it.
+### Database Setup (Choose One)
 
-## Good Luck!
-I'm really excited to see what you produce! Try your best with it and don't worry if you can't figure out everything. Submit whatever you have as a PR following the template in [pr_template.md](pr_template.md). I hope you enjoy working on this and feel proud enough of it to use it as a project or a demo of your abilities on your portfolio :)
+#### Option 1: Local PostgreSQL
+
+1. Install PostgreSQL:
+
+   - Mac: `brew install postgresql@14`
+   - Windows: Download from postgresql.org
+   - Linux: `sudo apt-get install postgresql`
+
+2. Start PostgreSQL:
+
+```bash
+   # Mac
+   brew services start postgresql@14
+
+   # Linux
+   sudo service postgresql start
+```
+
+3. Create database:
+
+```bash
+   psql postgres
+   CREATE DATABASE quantum_entanglement;
+   \q
+```
+
+4. Your connection string will be:
+
+```
+   postgresql://localhost:5432/quantum_entanglement
+```
+
+#### Option 2: Free Cloud PostgreSQL (Recommended)
+
+**Neon (Recommended - Free Forever):**
+
+1. Go to https://neon.tech
+2. Sign up for free account
+3. Create new project named "quantum-entanglement"
+4. Copy the connection string from dashboard
+5. Format: `postgresql://username:password@host/dbname?sslmode=require`
+
+**OR Supabase (Alternative):**
+
+1. Go to https://supabase.com
+2. Sign up for free account
+3. Create new project
+4. Go to Settings → Database
+5. Copy "Connection string" under "Connection pooling"
+
+### Backend Setup
+
+1. Navigate to backend directory:
+
+```bash
+cd backend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+4. Add your credentials to `.env`:
+
+```
+GEMINI_API_KEY=your_gemini_api_key
+DATABASE_URL=your_postgresql_connection_string
+PORT=5001
+NODE_ENV=development
+```
+
+5. Run backend:
+
+```bash
+npm run dev
+```
+
+Backend will run on http://localhost:5001
+Tables will be created automatically on first run!
+
+### Frontend Setup
+
+1. Navigate to frontend directory (in a new terminal):
+
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+4. Run frontend:
+
+```bash
+npm run dev
+```
+
+5. Open http://localhost:5173 in your browser
+
+## Getting API Keys
+
+### Google Gemini API (Free):
+
+1. Go to https://aistudio.google.com/app/apikey
+2. Sign in with Google account
+3. Click "Get API Key" or "Create API Key"
+4. Copy the API key
+
+### Database Connection String Examples:
+
+**Local PostgreSQL:**
+
+```
+postgresql://localhost:5432/quantum_entanglement
+```
+
+**Neon (with SSL):**
+
+```
+postgresql://username:password@ep-something.us-east-2.aws.neon.tech/quantum_entanglement?sslmode=require
+```
+
+**Supabase:**
+
+```
+postgresql://postgres.xxxxxxxxxxxxx:password@aws-0-us-west-1.pooler.supabase.com:6543/postgres
+```
+
+## Database Schema
+
+The backend automatically creates these tables:
+
+**quiz_results:**
+
+- id (SERIAL PRIMARY KEY)
+- question_id (VARCHAR)
+- user_name (VARCHAR)
+- selected_answer (TEXT)
+- is_correct (BOOLEAN)
+- timestamp (TIMESTAMP)
+- UNIQUE constraint on (question_id, user_name)
+
+**short_answers:**
+
+- id (SERIAL PRIMARY KEY)
+- question_id (VARCHAR)
+- user_name (VARCHAR)
+- answer (TEXT)
+- score (INTEGER)
+- feedback (TEXT)
+- correct (BOOLEAN)
+- missed_points (TEXT[])
+- strengths (TEXT)
+- timestamp (TIMESTAMP)
+
+**comments:**
+
+- id (SERIAL PRIMARY KEY)
+- page_id (VARCHAR)
+- user_name (VARCHAR)
+- comment (TEXT)
+- timestamp (TIMESTAMP)
+
+## Deployment
+
+### Backend (Railway/Render)
+
+**Railway (Recommended):**
+
+1. Push code to GitHub
+2. Go to https://railway.app
+3. Create new project → "Deploy from GitHub repo"
+4. Select your repository
+5. Add PostgreSQL service (Railway provides free PostgreSQL)
+6. Add environment variables:
+   - `GEMINI_API_KEY`
+   - `DATABASE_URL` (auto-filled by Railway)
+   - `NODE_ENV=production`
+7. Set root directory to `backend`
+8. Deploy!
+
+**Render:**
+
+1. Go to https://render.com
+2. New → Web Service
+3. Connect GitHub repository
+4. Root directory: `backend`
+5. Build command: `npm install`
+6. Start command: `npm start`
+7. Add PostgreSQL database (free tier)
+8. Add environment variables
+9. Deploy!
+
+### Frontend (Vercel/Netlify)
+
+**Vercel:**
+
+1. Push code to GitHub
+2. Go to https://vercel.com
+3. Import project
+4. Root directory: `frontend`
+5. Framework: Vite
+6. Build command: `npm run build`
+7. Output directory: `dist`
+8. Add environment variable:
+   - `VITE_API_URL=https://your-backend-url.com/api`
+9. Deploy!
+
+## Project Structure
+
+```
+quantum-entanglement-ideacon/
+├── frontend/
+│   ├── src/
+│   │   ├── components/       # Reusable components
+│   │   ├── pages/           # Page components
+│   │   ├── utils/           # Helper functions
+│   │   ├── types/           # TypeScript types
+│   │   ├── App.tsx          # Main app component
+│   │   └── main.tsx         # Entry point
+│   └── package.json
+└── backend/
+    ├── server.js           # Express server with PostgreSQL
+    ├── package.json        # Dependencies
+    └── .env.example        # Environment variables template
+```
+
+## Development
+
+### Running Both Servers Concurrently
+
+Terminal 1 (Backend):
+
+```bash
+cd backend
+npm run dev
+```
+
+Terminal 2 (Frontend):
+
+```bash
+cd frontend
+npm run dev
+```
+
+### Testing the API
+
+```bash
+# Health check (also tests database connection)
+curl http://localhost:5001/api/health
+
+# Get quiz results
+curl http://localhost:5001/api/quiz/results/entanglement-basics-mc
+
+# Get comments
+curl http://localhost:5001/api/comments/what-is-entanglement
+```
+
+### Viewing Database Content
+
+**If using local PostgreSQL:**
+
+```bash
+psql quantum_entanglement
+SELECT * FROM quiz_results;
+SELECT * FROM comments;
+\q
+```
+
+**If using Neon/Supabase:**
+
+- Use their web dashboard SQL editor
+
+## Troubleshooting
+
+### Backend won't start
+
+- Check DATABASE_URL is correct
+- Verify Gemini API key is valid
+- Ensure port 5001 isn't already in use
+- Check PostgreSQL is running (if local)
+
+### Database connection issues
+
+- For cloud databases, ensure SSL mode is enabled
+- Check firewall/network settings
+- Verify username and password are correct
+- For Neon: Make sure project isn't suspended (free tier)
+
+### Frontend can't connect to backend
+
+- Verify backend is running on port 5001
+- Check CORS settings in backend
+- Make sure proxy is configured in vite.config.ts
+
+## Learning Objectives
+
+This project teaches:
+
+1. **Quantum Entanglement Basics** - Understanding the phenomenon
+2. **Bell's Theorem** - The mathematical proof and experiments
+3. **Real Applications** - Quantum cryptography, computing, teleportation, and sensing
+
+## Features Implemented
+
+✅ Beautiful, responsive frontend design
+✅ Home page with engaging introduction
+✅ Multiple detailed lesson pages
+✅ Interactive multiple-choice quizzes with live results
+✅ AI-powered short answer grading
+✅ Comment sections on each page
+✅ User name persistence with localStorage
+✅ Real-time poll results with user names
+✅ 3D visualizations using Three.js
+✅ PostgreSQL database with auto-initialization
+
+## Credits
+
+Created for Hack4Impact Technical Assessment
+
+## License
+
+MIT

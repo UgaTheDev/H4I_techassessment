@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
   Sphere,
   Html,
-  Line,
   RoundedBox,
   Float,
   Stars,
@@ -97,7 +96,6 @@ function Scientist({
 function EPRParticle({
   state,
   label,
-  color,
   onMeasure,
   viewMode,
 }: {

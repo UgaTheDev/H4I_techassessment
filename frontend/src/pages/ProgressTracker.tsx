@@ -4,7 +4,6 @@ import {
   IconCheck,
   IconCircle,
   IconTrophy,
-  IconX,
   IconChevronUp,
   IconChevronDown,
 } from "@tabler/icons-react";

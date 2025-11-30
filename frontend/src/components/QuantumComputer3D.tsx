@@ -6,7 +6,6 @@ import {
   Html,
   RoundedBox,
   Float,
-  MeshTransmissionMaterial,
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -236,8 +235,6 @@ function QuantumWire({
   end: [number, number, number];
   color?: string;
 }) {
-  const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)];
-
   return (
     <line>
       <bufferGeometry>
@@ -260,13 +257,6 @@ function QuantumCircuit({
   qubits: QubitProps[];
   step: number;
 }) {
-  const circuit = [
-    { gate: "H", qubit: 0, step: 0 },
-    { gate: "CNOT", qubit: 0, target: 1, step: 1 },
-    { gate: "H", qubit: 2, step: 0 },
-    { gate: "CNOT", qubit: 2, target: 3, step: 1 },
-  ];
-
   return (
     <>
       {/* Quantum wires */}
@@ -323,11 +313,8 @@ function ChipHousing() {
         [3.5, -2.5],
         [3.5, 2.5],
       ].map(([x, y], i) => (
-        <mesh key={i} position={[x, y, 0.26]}>
-          <cylinderGeometry
-            args={[0.15, 0.15, 0.1, 16]}
-            rotation={[Math.PI / 2, 0, 0]}
-          />
+        <mesh key={i} position={[x, y, 0.26]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.15, 0.15, 0.1, 16]} />
           <meshStandardMaterial color="#fbbf24" metalness={1} roughness={0.3} />
         </mesh>
       ))}

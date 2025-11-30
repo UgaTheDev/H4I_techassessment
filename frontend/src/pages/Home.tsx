@@ -20,7 +20,6 @@ import * as THREE from "three";
 function EntangledParticle({
   basePosition,
   color,
-  partner,
 }: {
   basePosition: [number, number, number];
   color: string;

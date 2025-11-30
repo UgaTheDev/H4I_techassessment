@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -7,7 +7,6 @@ import {
   Line,
   RoundedBox,
   Cylinder,
-  Text,
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -264,7 +263,6 @@ function Scene({
   switching,
   leftDetections,
   rightDetections,
-  coincidences,
   photonActive,
   leftFlash,
   rightFlash,
@@ -369,7 +367,7 @@ export function AspectExperiment3D() {
   const [photonActive, setPhotonActive] = useState(false);
   const [leftFlash, setLeftFlash] = useState(false);
   const [rightFlash, setRightFlash] = useState(false);
-  const [arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
+  const [_arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
 
   // Angle configurations for switching
   const angleConfigs = [
@@ -450,9 +448,6 @@ export function AspectExperiment3D() {
     leftDetections > 0
       ? ((coincidences / leftDetections) * 100).toFixed(1)
       : "—";
-
-  // Bell inequality S parameter (simplified)
-  const S = 2 * Math.sqrt(2); // Theoretical maximum violation
 
   return (
     <div className="space-y-4">

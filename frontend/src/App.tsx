@@ -7,7 +7,7 @@ import { ShareButton } from "./components/ShareButton";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 
 // New feature imports
-import { ThemeProvider, useTheme } from "./components/ThemeProvider";
+import { ThemeProvider } from "./components/ThemeProvider";
 import { GlossaryProvider, GlossaryPanel } from "./components/Glossary";
 import { ELI5Provider } from "./components/ELI5Mode";
 import {
@@ -42,9 +42,6 @@ const FamousExperiments = lazy(() =>
 const Applications = lazy(() =>
   import("./pages/Applications").then((m) => ({ default: m.Applications }))
 );
-
-// REMOVED: EscapeRoomPage import
-
 // Loading component
 function PageLoader() {
   return (

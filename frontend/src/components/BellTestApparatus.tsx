@@ -1,13 +1,6 @@
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Html,
-  Line,
-  Cylinder,
-  Box,
-  RoundedBox,
-} from "@react-three/drei";
+import { OrbitControls, Html, Line, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 interface PhotonProps {
@@ -357,7 +350,7 @@ export function BellTestApparatus() {
   });
   const [photonKey, setPhotonKey] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [pendingDetections, setPendingDetections] = useState({
+  const [_pendingDetections, setPendingDetections] = useState({
     alice: false,
     bob: false,
   });

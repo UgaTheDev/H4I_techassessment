@@ -3,7 +3,7 @@ import { IconBrain, IconQuestionMark } from "@tabler/icons-react";
 import { MultipleChoiceQuiz } from "../components/MultipleChoiceQuiz";
 import { ShortAnswerQuiz } from "../components/ShortAnswerQuiz";
 import { CommentSection } from "../components/CommentSection";
-import { EPRParadox3D } from "../components/EPRParadox3D";
+import EPRParadox3D from "../components/EPRParadox3D";
 import {
   ThoughtExperiment,
   EPR_SCENARIOS,

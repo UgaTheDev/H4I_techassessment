@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "h4itechassessment-production.up.railway.app/api/$1"
+      "destination": "https://h4itechassessment-production.up.railway.app/api/$1"
     },
     {
       "source": "/(.*)",

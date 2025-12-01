@@ -468,11 +468,11 @@ export function AspectExperiment3D() {
         </Canvas>
 
         {/* Info overlay */}
-        <div className="absolute top-4 left-4 bg-black/85 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-amber-500/30 max-w-xs">
-          <p className="text-amber-400 font-bold mb-1">
+        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border-2 border-amber-300 max-w-xs">
+          <p className="text-amber-800 font-bold mb-1">
             🏆 Aspect's 1982 Experiment
           </p>
-          <p className="text-sm text-gray-200">
+          <p className="text-sm text-gray-700">
             The polarizer angles switch randomly while photons are in flight —
             ruling out any "local hidden variable" explanations.
           </p>
@@ -488,7 +488,7 @@ export function AspectExperiment3D() {
 
       {/* Angle display */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="glass-card p-4 rounded-lg border-2 border-cyan-200">
+        <div className="bg-white border-2 border-cyan-200 p-4 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-semibold text-cyan-700">
               Left Polarizer
@@ -502,7 +502,7 @@ export function AspectExperiment3D() {
           </div>
         </div>
 
-        <div className="glass-card p-4 rounded-lg border-2 border-orange-200">
+        <div className="bg-white border-2 border-orange-200 p-4 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-semibold text-orange-700">
               Right Polarizer
@@ -519,46 +519,27 @@ export function AspectExperiment3D() {
 
       {/* Results */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="glass-card p-4 rounded-lg border-2 border-purple-200">
+        <div className="bg-white border-2 border-purple-200 p-4 rounded-lg shadow-sm">
           <div className="text-xs text-purple-600 mb-1">Angle Difference</div>
           <div className="text-2xl font-bold text-purple-900">
             {Math.abs(leftAngle - rightAngle)}°
           </div>
         </div>
 
-        <div className="glass-card p-4 rounded-lg border-2 border-blue-200">
+        <div className="bg-white border-2 border-blue-200 p-4 rounded-lg shadow-sm">
           <div className="text-xs text-blue-600 mb-1">Quantum Prediction</div>
           <div className="text-2xl font-bold text-blue-900">
             {(quantumPrediction * 100).toFixed(1)}%
           </div>
         </div>
 
-        <div className="glass-card p-4 rounded-lg border-2 border-green-200">
+        <div className="bg-white border-2 border-green-200 p-4 rounded-lg shadow-sm">
           <div className="text-xs text-green-600 mb-1">
             Measured Coincidences
           </div>
           <div className="text-2xl font-bold text-green-900">
             {coincidenceRate}%
           </div>
-        </div>
-      </div>
-
-      {/* Bell violation indicator */}
-      <div className="bg-gradient-to-r from-red-900/30 to-purple-900/30 border-2 border-red-500/50 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-bold text-white">
-              Bell Inequality Violation
-            </div>
-            <div className="text-sm text-gray-300">
-              Classical limit: S ≤ 2 | Quantum: S = 2√2 ≈ 2.83
-            </div>
-          </div>
-          <div className="text-4xl font-bold text-red-400">S = 2.83</div>
-        </div>
-        <div className="mt-2 text-xs text-gray-400">
-          Aspect's experiment measured S ≈ 2.70 ± 0.05, violating Bell's
-          inequality by over 40 standard deviations!
         </div>
       </div>
 
@@ -576,18 +557,18 @@ export function AspectExperiment3D() {
         </button>
         <button
           onClick={handleReset}
-          className="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 transition-all"
+          className="px-6 py-3 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500 transition-all"
         >
           🔄 Reset
         </button>
       </div>
 
       {/* Historical context */}
-      <div className="bg-amber-950 border border-amber-500/30 rounded-lg p-4 text-sm">
-        <p className="font-bold text-amber-300 mb-2">
+      <div className="bg-white border-2 border-amber-200 rounded-lg p-4 text-sm shadow-sm">
+        <p className="font-bold text-amber-800 mb-2">
           📚 Historical Significance:
         </p>
-        <p className="text-gray-300 text-xs leading-relaxed">
+        <p className="text-gray-700 text-xs leading-relaxed">
           Alain Aspect's 1982 experiment at the University of Paris was the
           first to use fast-switching polarizers. The switches changed the
           measurement settings while the photons were still in flight (within

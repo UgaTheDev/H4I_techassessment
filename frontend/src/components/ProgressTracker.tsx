@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { IconCheck, IconCircle } from "@tabler/icons-react";
+import { IconCheck, IconCircle, IconX } from "@tabler/icons-react";
 
 interface PageProgress {
   path: string;
@@ -11,6 +11,7 @@ interface PageProgress {
 
 export function ProgressTracker() {
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(true);
   const [progress, setProgress] = useState<PageProgress[]>([
     { path: "/", title: "Home", visited: false },
     {
@@ -34,6 +35,12 @@ export function ProgressTracker() {
     if (savedProgress) {
       setProgress(JSON.parse(savedProgress));
     }
+
+    // Load open/closed state from localStorage
+    const savedState = localStorage.getItem("progressTrackerOpen");
+    if (savedState !== null) {
+      setIsOpen(JSON.parse(savedState));
+    }
   }, []);
 
   useEffect(() => {
@@ -44,32 +51,63 @@ export function ProgressTracker() {
       }
       return page;
     });
-
     setProgress(updatedProgress);
     localStorage.setItem("pageProgress", JSON.stringify(updatedProgress));
   }, [location.pathname]);
 
+  const handleClose = () => {
+    setIsOpen(false);
+    localStorage.setItem("progressTrackerOpen", JSON.stringify(false));
+  };
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    localStorage.setItem("progressTrackerOpen", JSON.stringify(true));
+  };
+
   const visitedCount = progress.filter((p) => p.visited).length;
   const totalPages = progress.length;
   const progressPercentage = (visitedCount / totalPages) * 100;
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={handleOpen}
+        className="fixed bottom-6 right-6 z-50 bg-quantum-500 hover:bg-quantum-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
+        title="Open progress tracker"
+      >
+        <IconCheck className="h-6 w-6" />
+        <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          {visitedCount}
+        </span>
+      </button>
+    );
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <div className="glass-card rounded-xl p-4 shadow-2xl border-2 border-quantum-300 w-64">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-sm text-gray-800">Your Progress</h3>
-          <span className="text-xs font-semibold text-quantum-600">
-            {visitedCount}/{totalPages}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-quantum-600">
+              {visitedCount}/{totalPages}
+            </span>
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded"
+              title="Close progress tracker"
+            >
+              <IconX className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-
         <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
           <div
             className="quantum-gradient h-2 rounded-full transition-all duration-500"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
-
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {progress.map((page) => (
             <div
@@ -89,7 +127,6 @@ export function ProgressTracker() {
             </div>
           ))}
         </div>
-
         {visitedCount === totalPages && (
           <div className="mt-3 pt-3 border-t border-gray-200">
             <p className="text-xs font-semibold text-green-600 text-center">

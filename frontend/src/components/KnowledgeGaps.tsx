@@ -6,8 +6,9 @@ import {
   IconRefresh,
   IconX,
   IconChartBar,
+  IconArrowRight,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface QuizAttempt {
   questionId: string;
@@ -336,7 +337,7 @@ export function KnowledgeGapPanel({
               {/* Weak Areas */}
               {weakAreas.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="flex items-center gap-2 text-red-600 font-semibold mb-3">
+                  <h3 className="flex items-center gap-2 text-amber-700 font-semibold mb-3">
                     <IconAlertTriangle className="w-5 h-5" />
                     Areas to Review ({weakAreas.length})
                   </h3>
@@ -346,7 +347,7 @@ export function KnowledgeGapPanel({
                         key={area.topic}
                         to={area.path}
                         onClick={onClose}
-                        className="block p-4 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                        className="block p-4 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <div>
@@ -359,7 +360,7 @@ export function KnowledgeGapPanel({
                             </p>
                           </div>
                           <div className="text-right">
-                            <span className="text-xs px-2 py-1 bg-red-200 text-red-800 rounded-full">
+                            <span className="text-xs px-2 py-1 bg-amber-200 text-amber-800 rounded-full">
                               Needs Review
                             </span>
                             {area.recentTrend === "improving" && (
@@ -468,31 +469,59 @@ export function KnowledgeGapPanel({
 // Inline suggestion card for weak areas
 export function ReviewSuggestion() {
   const { weakAreas } = useKnowledgeGaps();
+  const location = useLocation();
 
   if (weakAreas.length === 0) return null;
 
+  // Check if current page is one of the weak areas
+  const currentWeakArea = weakAreas.find(
+    (area) => area.path === location.pathname
+  );
+
+  // If on a weak area page, show encouragement
+  if (currentWeakArea) {
+    return (
+      <div className="glass-card rounded-xl p-4 mb-6 border-2 border-blue-300 bg-blue-50">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-blue-500 rounded-lg">
+            <IconTrendingUp className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-900">Keep Practicing</h4>
+            <p className="text-sm text-blue-800">
+              You scored {Math.round(currentWeakArea.accuracy)}% on{" "}
+              <strong>{currentWeakArea.topicLabel}</strong>. Practice the
+              quizzes below to strengthen your understanding and improve your
+              score!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise show suggestion for weakest area
   const weakest = weakAreas[0];
 
   return (
-    <div className="glass-card rounded-xl p-4 mb-6 border-2 border-orange-200 dark:border-orange-800 bg-orange-50/50 dark:bg-orange-900/20">
+    <div className="glass-card rounded-xl p-4 mb-6 border-2 border-amber-300 bg-amber-50">
       <div className="flex items-start gap-3">
-        <div className="p-2 bg-orange-100 dark:bg-orange-800 rounded-lg">
-          <IconAlertTriangle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+        <div className="p-2 bg-amber-500 rounded-lg">
+          <IconAlertTriangle className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-gray-900 dark:text-white">
-            Suggested Review
-          </h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          <h4 className="font-semibold text-amber-900">Suggested Review</h4>
+          <p className="text-sm text-amber-800 mb-3">
             You scored {Math.round(weakest.accuracy)}% on{" "}
-            <strong>{weakest.topicLabel}</strong>. Consider reviewing this
-            topic!
+            <strong>{weakest.topicLabel}</strong>. Consider reviewing this topic
+            to strengthen your understanding.
           </p>
           <Link
             to={weakest.path}
-            className="inline-flex items-center gap-1 text-sm text-orange-600 dark:text-orange-400 font-medium hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm text-amber-700 font-medium hover:underline transition-colors"
           >
-            Review {weakest.topicLabel} →
+            Review {weakest.topicLabel}
+            <IconArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

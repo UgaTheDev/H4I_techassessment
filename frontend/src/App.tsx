@@ -241,7 +241,7 @@ function AppContent() {
               </div>
 
               <p className="text-lg mb-2">
-                Created for Hack4Impact IdeaCon 2025
+                Created for Hack4Impact IdeaCon Spring 2026
               </p>
               <p className="text-gray-400 mb-6">
                 Exploring the fascinating world of quantum entanglement

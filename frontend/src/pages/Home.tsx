@@ -382,7 +382,7 @@ export function Home() {
         <div className="relative z-10 text-center px-4 max-w-4xl">
           <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-quantum-700 mb-6 shadow-lg">
             <IconSparkles className="h-4 w-4" />
-            <span>Hack4Impact IdeaCon 2025</span>
+            <span>Hack4Impact IdeaCon 2026</span>
           </div>
 
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">

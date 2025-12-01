@@ -90,7 +90,6 @@ function PolarizingSwitch({
   switching,
   side,
 }: PolarizingSwitchProps) {
-  const groupRef = useRef<THREE.Group>(null);
   const rotatingRef = useRef<THREE.Group>(null);
   const [currentAngle, setCurrentAngle] = useState(angle);
 
@@ -99,7 +98,6 @@ function PolarizingSwitch({
     setCurrentAngle((prev) => THREE.MathUtils.lerp(prev, angle, 0.1));
 
     if (rotatingRef.current) {
-      // Rotate the entire polarizer assembly around Z axis
       rotatingRef.current.rotation.z = (currentAngle * Math.PI) / 180;
     }
   });
@@ -107,7 +105,7 @@ function PolarizingSwitch({
   const baseColor = side === "left" ? "#06b6d4" : "#f97316";
 
   return (
-    <group ref={groupRef} position={position}>
+    <group position={position}>
       {/* Static mounting frame */}
       <RoundedBox args={[0.15, 1.6, 1.6]} radius={0.03}>
         <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
@@ -366,7 +364,7 @@ export function AspectExperiment3D() {
   const [photonActive, setPhotonActive] = useState(false);
   const [leftFlash, setLeftFlash] = useState(false);
   const [rightFlash, setRightFlash] = useState(false);
-  const [arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
+  const [_arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
 
   const angleConfigs = [
     { left: 0, right: 22.5 },
@@ -407,19 +405,16 @@ export function AspectExperiment3D() {
       if (newSet.size === 2) {
         setPhotonActive(false);
 
-        // ALWAYS flash detectors when photons arrive
         setLeftFlash(true);
         setRightFlash(true);
         setLeftDetections((d) => d + 1);
         setRightDetections((d) => d + 1);
 
-        // Calculate if it's a coincidence
         const detected = Math.random() < quantumPrediction;
         if (detected) {
           setCoincidences((c) => c + 1);
         }
 
-        // Turn off flash after 200ms
         setTimeout(() => {
           setLeftFlash(false);
           setRightFlash(false);

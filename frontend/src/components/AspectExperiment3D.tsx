@@ -1,13 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Sphere,
-  Html,
-  Line,
-  RoundedBox,
-  Cylinder,
-} from "@react-three/drei";
+import { OrbitControls, Sphere, Html, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 function PhotonPair({
@@ -77,134 +70,63 @@ function PhotonPair({
   );
 }
 
-interface PolarizingSwitchProps {
-  position: [number, number, number];
-  angle: number;
-  switching: boolean;
-  side: "left" | "right";
-}
-
-function PolarizingSwitch({
-  position,
-  angle,
-  switching,
-  side,
-}: PolarizingSwitchProps) {
-  const rotatingRef = useRef<THREE.Group>(null);
-  const [currentAngle, setCurrentAngle] = useState(angle);
-
-  useFrame(() => {
-    // Smooth angle transition
-    setCurrentAngle((prev) => THREE.MathUtils.lerp(prev, angle, 0.1));
-
-    if (rotatingRef.current) {
-      rotatingRef.current.rotation.z = (currentAngle * Math.PI) / 180;
-    }
-  });
-
-  const baseColor = side === "left" ? "#06b6d4" : "#f97316";
-
-  return (
-    <group position={position}>
-      {/* Static mounting frame */}
-      <RoundedBox args={[0.15, 1.6, 1.6]} radius={0.03}>
-        <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
-      </RoundedBox>
-
-      {/* Rotating polarizer assembly */}
-      <group ref={rotatingRef}>
-        {/* Main polarizer plate */}
-        <RoundedBox args={[0.12, 1.3, 1.3]} radius={0.02}>
-          <meshStandardMaterial
-            color="#1f2937"
-            metalness={0.6}
-            roughness={0.4}
-          />
-        </RoundedBox>
-
-        {/* Polarization slits (black lines) */}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <mesh key={i} position={[0.07, -0.55 + i * 0.16, 0]}>
-            <boxGeometry args={[0.02, 0.02, 1.2]} />
-            <meshStandardMaterial color="#0a0a0a" />
-          </mesh>
-        ))}
-
-        {/* Angle indicator arrow */}
-        <mesh position={[0, 0.8, 0]}>
-          <coneGeometry args={[0.08, 0.2, 8]} />
-          <meshStandardMaterial
-            color={baseColor}
-            emissive={baseColor}
-            emissiveIntensity={0.5}
-          />
-        </mesh>
-      </group>
-
-      {/* Switching indicator */}
-      {switching && (
-        <Sphere args={[0.12, 16, 16]} position={[0, -1, 0]}>
-          <meshBasicMaterial color="#22c55e" />
-        </Sphere>
-      )}
-
-      {/* Label */}
-      <Html position={[0, 1.2, 0]} center>
-        <div
-          className={`px-2 py-1 rounded text-xs font-bold whitespace-nowrap ${
-            switching
-              ? "bg-green-500 text-white animate-pulse"
-              : "bg-gray-800 text-white"
-          }`}
-        >
-          {currentAngle.toFixed(0)}°
-        </div>
-      </Html>
-    </group>
-  );
-}
-
 function Detector({
   position,
+  angle,
+  color,
   detections,
   flash,
   side,
 }: {
   position: [number, number, number];
+  angle: number;
+  color: string;
   detections: number;
   flash: boolean;
   side: "left" | "right";
 }) {
-  const color = side === "left" ? "#06b6d4" : "#f97316";
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.z = angle;
+    }
+  });
 
   return (
-    <group position={position}>
-      <RoundedBox args={[0.6, 1, 1]} radius={0.08}>
-        <meshStandardMaterial
-          color={flash ? color : "#1f2937"}
-          emissive={flash ? color : "#000000"}
-          emissiveIntensity={flash ? 1 : 0}
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </RoundedBox>
+    <>
+      <group ref={groupRef} position={position}>
+        {/* Detector body - thin plane */}
+        <mesh>
+          <boxGeometry args={[0.05, 1.2, 1.2]} />
+          <meshStandardMaterial
+            color={flash ? color : "#1f2937"}
+            metalness={0.8}
+            roughness={0.2}
+            emissive={flash ? color : "#000000"}
+            emissiveIntensity={flash ? 1 : 0}
+          />
+        </mesh>
+      </group>
 
-      <Cylinder
-        args={[0.2, 0.2, 0.1, 32]}
-        position={[side === "left" ? 0.25 : -0.25, 0, 0]}
-        rotation={[0, 0, Math.PI / 2]}
-      >
-        <meshStandardMaterial color="#0f172a" />
-      </Cylinder>
-
-      <Html position={[0, -0.8, 0]} center>
-        <div className="text-center">
-          <div className="bg-gray-800 text-white px-2 py-1 rounded text-xs font-mono">
-            {detections}
-          </div>
+      {/* Static label above detector */}
+      <Html position={[position[0], position[1] + 1.3, position[2]]} center>
+        <div
+          className="px-3 py-1 rounded text-sm font-bold whitespace-nowrap shadow-lg"
+          style={{ backgroundColor: color, color: "white" }}
+        >
+          {side === "left" ? "Alice's Filter:" : "Bob's Filter:"}{" "}
+          {Math.round(angle * (180 / Math.PI))}°
         </div>
       </Html>
-    </group>
+
+      {/* Static detection count below detector */}
+      <Html position={[position[0], position[1] - 1.3, position[2]]} center>
+        <div className="bg-gray-800 text-white px-3 py-1 rounded text-sm font-mono font-bold">
+          {detections}
+        </div>
+      </Html>
+    </>
   );
 }
 
@@ -224,7 +146,7 @@ function PhotonSource({ emitting }: { emitting: boolean }) {
   return (
     <group position={[0, 0, 0]}>
       <mesh ref={ref}>
-        <octahedronGeometry args={[0.25, 0]} />
+        <sphereGeometry args={[0.3, 32, 32]} />
         <meshStandardMaterial
           color="#d946ef"
           emissive="#d946ef"
@@ -232,19 +154,6 @@ function PhotonSource({ emitting }: { emitting: boolean }) {
           transparent
           opacity={0.8}
         />
-      </mesh>
-
-      <Cylinder
-        args={[0.08, 0.08, 0.6, 16]}
-        position={[0, 0, -0.5]}
-        rotation={[Math.PI / 2, 0, 0]}
-      >
-        <meshStandardMaterial color="#4b5563" metalness={0.8} />
-      </Cylinder>
-
-      <mesh position={[0, 0, -0.9]}>
-        <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
-        <meshBasicMaterial color="#a855f7" transparent opacity={0.6} />
       </mesh>
 
       <Html position={[0, 0.6, 0]} center>
@@ -259,7 +168,6 @@ function PhotonSource({ emitting }: { emitting: boolean }) {
 function Scene({
   leftAngle,
   rightAngle,
-  switching,
   leftDetections,
   rightDetections,
   photonActive,
@@ -269,7 +177,6 @@ function Scene({
 }: {
   leftAngle: number;
   rightAngle: number;
-  switching: boolean;
   leftDetections: number;
   rightDetections: number;
   photonActive: boolean;
@@ -308,22 +215,10 @@ function Scene({
 
       <PhotonSource emitting={photonActive} />
 
-      <PolarizingSwitch
-        position={[-2, 0, 0]}
-        angle={leftAngle}
-        switching={switching}
-        side="left"
-      />
-
-      <PolarizingSwitch
-        position={[2, 0, 0]}
-        angle={rightAngle}
-        switching={switching}
-        side="right"
-      />
-
       <Detector
         position={[-4, 0, 0]}
+        angle={leftAngle}
+        color="#06b6d4"
         detections={leftDetections}
         flash={leftFlash}
         side="left"
@@ -331,6 +226,8 @@ function Scene({
 
       <Detector
         position={[4, 0, 0]}
+        angle={rightAngle}
+        color="#f97316"
         detections={rightDetections}
         flash={rightFlash}
         side="right"
@@ -355,9 +252,7 @@ function Scene({
 export function AspectExperiment3D() {
   const [isRunning, setIsRunning] = useState(false);
   const [leftAngle, setLeftAngle] = useState(0);
-  const [rightAngle, setRightAngle] = useState(22.5);
-  const [autoSwitch, setAutoSwitch] = useState(false);
-  const [switching, setSwitching] = useState(false);
+  const [rightAngle, setRightAngle] = useState(Math.PI / 4);
   const [leftDetections, setLeftDetections] = useState(0);
   const [rightDetections, setRightDetections] = useState(0);
   const [coincidences, setCoincidences] = useState(0);
@@ -366,15 +261,7 @@ export function AspectExperiment3D() {
   const [rightFlash, setRightFlash] = useState(false);
   const [_arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
 
-  const angleConfigs = [
-    { left: 0, right: 22.5 },
-    { left: 0, right: 67.5 },
-    { left: 45, right: 22.5 },
-    { left: 45, right: 67.5 },
-  ];
-  const [configIndex, setConfigIndex] = useState(0);
-
-  const angleDiff = (Math.abs(leftAngle - rightAngle) * Math.PI) / 180;
+  const angleDiff = Math.abs(leftAngle - rightAngle);
   const quantumPrediction = Math.cos(2 * angleDiff) ** 2;
 
   useEffect(() => {
@@ -384,18 +271,15 @@ export function AspectExperiment3D() {
       setPhotonActive(true);
       setArrivedSides(new Set());
 
-      if (autoSwitch && Math.random() > 0.6) {
-        setSwitching(true);
-        const newIndex = (configIndex + 1) % angleConfigs.length;
-        setConfigIndex(newIndex);
-        setLeftAngle(angleConfigs[newIndex].left);
-        setRightAngle(angleConfigs[newIndex].right);
-        setTimeout(() => setSwitching(false), 300);
-      }
+      // Randomly switch angles
+      const newLeftAngle = Math.random() * Math.PI * 2;
+      const newRightAngle = Math.random() * Math.PI * 2;
+      setLeftAngle(newLeftAngle);
+      setRightAngle(newRightAngle);
     }, 1500);
 
     return () => clearInterval(emitInterval);
-  }, [isRunning, autoSwitch, configIndex, angleConfigs]);
+  }, [isRunning]);
 
   const handlePhotonArrive = (side: "left" | "right") => {
     setArrivedSides((prev) => {
@@ -431,7 +315,8 @@ export function AspectExperiment3D() {
     setRightDetections(0);
     setCoincidences(0);
     setPhotonActive(false);
-    setConfigIndex(0);
+    setLeftAngle(0);
+    setRightAngle(Math.PI / 4);
   };
 
   const coincidenceRate =
@@ -446,7 +331,6 @@ export function AspectExperiment3D() {
           <Scene
             leftAngle={leftAngle}
             rightAngle={rightAngle}
-            switching={switching}
             leftDetections={leftDetections}
             rightDetections={rightDetections}
             photonActive={photonActive}
@@ -465,50 +349,34 @@ export function AspectExperiment3D() {
             ruling out any "local hidden variable" explanations.
           </p>
         </div>
-
-        {switching && (
-          <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg font-bold animate-pulse">
-            ⚡ SWITCHING!
-          </div>
-        )}
       </div>
 
-      {/* Angle Controls */}
+      {/* Angle Display */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white border-2 border-cyan-200 p-4 rounded-lg shadow-sm">
-          <label className="block text-sm font-semibold mb-2 text-cyan-700">
-            Left Polarizer: {leftAngle.toFixed(1)}°
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="90"
-            step="0.1"
-            value={leftAngle}
-            onChange={(e) => setLeftAngle(parseFloat(e.target.value))}
-            disabled={autoSwitch}
-            className="w-full accent-cyan-500 disabled:opacity-50"
-          />
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-semibold text-cyan-700">
+              Left Detector
+            </span>
+            <span className="text-2xl font-bold text-cyan-900">
+              {Math.round((leftAngle * 180) / Math.PI)}°
+            </span>
+          </div>
+          <div className="text-xs text-gray-500">
             Detections: {leftDetections}
           </div>
         </div>
 
         <div className="bg-white border-2 border-orange-200 p-4 rounded-lg shadow-sm">
-          <label className="block text-sm font-semibold mb-2 text-orange-700">
-            Right Polarizer: {rightAngle.toFixed(1)}°
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="90"
-            step="0.1"
-            value={rightAngle}
-            onChange={(e) => setRightAngle(parseFloat(e.target.value))}
-            disabled={autoSwitch}
-            className="w-full accent-orange-500 disabled:opacity-50"
-          />
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-semibold text-orange-700">
+              Right Detector
+            </span>
+            <span className="text-2xl font-bold text-orange-900">
+              {Math.round((rightAngle * 180) / Math.PI)}°
+            </span>
+          </div>
+          <div className="text-xs text-gray-500">
             Detections: {rightDetections}
           </div>
         </div>
@@ -519,7 +387,7 @@ export function AspectExperiment3D() {
         <div className="bg-white border-2 border-purple-200 p-4 rounded-lg shadow-sm">
           <div className="text-xs text-purple-600 mb-1">Angle Difference</div>
           <div className="text-2xl font-bold text-purple-900">
-            {Math.abs(leftAngle - rightAngle).toFixed(1)}°
+            {Math.round((angleDiff * 180) / Math.PI)}°
           </div>
         </div>
 
@@ -540,25 +408,6 @@ export function AspectExperiment3D() {
         </div>
       </div>
 
-      {/* Bell violation indicator */}
-      <div className="bg-gradient-to-r from-red-50 to-purple-50 border-2 border-red-300 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-bold text-gray-900">
-              Bell Inequality Violation
-            </div>
-            <div className="text-sm text-gray-700">
-              Classical limit: S ≤ 2 | Quantum: S = 2√2 ≈ 2.83
-            </div>
-          </div>
-          <div className="text-4xl font-bold text-red-600">S = 2.83</div>
-        </div>
-        <div className="mt-2 text-xs text-gray-600">
-          Aspect's experiment measured S ≈ 2.70 ± 0.05, violating Bell's
-          inequality by over 40 standard deviations!
-        </div>
-      </div>
-
       {/* Controls */}
       <div className="flex gap-4">
         <button
@@ -572,27 +421,19 @@ export function AspectExperiment3D() {
           {isRunning ? "⏸️ Pause" : "▶️ Run Experiment"}
         </button>
         <button
-          onClick={() => setAutoSwitch(!autoSwitch)}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-            autoSwitch ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"
-          }`}
-        >
-          {autoSwitch ? "🔀 Auto Switch ON" : "🔀 Auto Switch OFF"}
-        </button>
-        <button
           onClick={handleReset}
-          className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+          className="px-6 py-3 bg-gray-400 text-white rounded-lg font-semibold hover:bg-gray-500 transition-all"
         >
           🔄 Reset
         </button>
       </div>
 
       {/* Historical context */}
-      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-lg p-4 text-sm">
-        <p className="font-bold text-amber-900 mb-2">
+      <div className="bg-white border-2 border-amber-200 rounded-lg p-4 text-sm shadow-sm">
+        <p className="font-bold text-amber-800 mb-2">
           📚 Historical Significance:
         </p>
-        <p className="text-gray-800 text-xs leading-relaxed">
+        <p className="text-gray-700 text-xs leading-relaxed">
           Alain Aspect's 1982 experiment at the University of Paris was the
           first to use fast-switching polarizers. The switches changed the
           measurement settings while the photons were still in flight (within

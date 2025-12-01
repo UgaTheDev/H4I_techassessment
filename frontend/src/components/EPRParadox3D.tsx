@@ -443,12 +443,12 @@ export function EPRParadox3D() {
           />
         </Canvas>
 
-        {/* View mode indicator */}
-        <div className="absolute top-4 left-4 bg-black/85 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-rose-500/30 max-w-sm">
-          <p className="text-rose-400 font-bold mb-1">
+        {/* View mode indicator - UPDATED TO LIGHT THEME */}
+        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border-2 border-rose-300 max-w-sm">
+          <p className="text-rose-700 font-bold mb-1">
             {viewDescriptions[viewMode].title}
           </p>
-          <p className="text-sm text-gray-200">
+          <p className="text-sm text-gray-700">
             {viewDescriptions[viewMode].description}
           </p>
         </div>
@@ -486,31 +486,35 @@ export function EPRParadox3D() {
 
       {/* Results */}
       {aliceState.measured && bobState.measured && (
-        <div className="bg-gradient-to-r from-cyan-900/30 to-orange-900/30 border border-purple-500/30 rounded-lg p-4">
+        <div className="bg-gradient-to-r from-cyan-50 to-orange-50 border-2 border-purple-300 rounded-lg p-4">
           <div className="flex justify-around items-center">
             <div className="text-center">
-              <div className="text-cyan-400 text-sm">Alice measured</div>
+              <div className="text-cyan-700 text-sm font-medium">
+                Alice measured
+              </div>
               <div
                 className={`text-3xl font-bold ${
-                  aliceState.spin === "up" ? "text-blue-400" : "text-red-400"
+                  aliceState.spin === "up" ? "text-blue-600" : "text-red-600"
                 }`}
               >
                 {aliceState.spin === "up" ? "↑ Up" : "↓ Down"}
               </div>
             </div>
-            <div className="text-purple-400 text-2xl">⟷</div>
+            <div className="text-purple-600 text-2xl font-bold">⟷</div>
             <div className="text-center">
-              <div className="text-orange-400 text-sm">Bob measured</div>
+              <div className="text-orange-700 text-sm font-medium">
+                Bob measured
+              </div>
               <div
                 className={`text-3xl font-bold ${
-                  bobState.spin === "up" ? "text-blue-400" : "text-red-400"
+                  bobState.spin === "up" ? "text-blue-600" : "text-red-600"
                 }`}
               >
                 {bobState.spin === "up" ? "↑ Up" : "↓ Down"}
               </div>
             </div>
           </div>
-          <div className="text-center mt-2 text-gray-400 text-sm">
+          <div className="text-center mt-2 text-gray-600 text-sm font-medium">
             Always anti-correlated! ({experimentCount} experiments)
           </div>
         </div>
@@ -536,13 +540,13 @@ export function EPRParadox3D() {
         </button>
       </div>
 
-      {/* The paradox explained */}
+      {/* The paradox explained - UPDATED TO LIGHT THEME */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-red-950 border border-red-500/30 rounded-lg p-4">
-          <div className="text-red-400 font-bold mb-2">
+        <div className="bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200 rounded-lg p-4">
+          <div className="text-rose-800 font-bold mb-2">
             🎩 Einstein's Argument (1935)
           </div>
-          <div className="text-xs text-gray-300 space-y-2">
+          <div className="text-sm text-gray-800 space-y-2">
             <p>
               "If measuring Alice's particle instantly determines Bob's result
               (even light-years away), then either:
@@ -562,9 +566,9 @@ export function EPRParadox3D() {
           </div>
         </div>
 
-        <div className="bg-blue-950 border border-blue-500/30 rounded-lg p-4">
-          <div className="text-blue-400 font-bold mb-2">🔬 Bohr's Response</div>
-          <div className="text-xs text-gray-300 space-y-2">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4">
+          <div className="text-blue-800 font-bold mb-2">🔬 Bohr's Response</div>
+          <div className="text-sm text-gray-800 space-y-2">
             <p>
               "You can't separate the quantum system from the measurement
               apparatus. The particles form a single, non-local quantum state.
@@ -582,14 +586,14 @@ export function EPRParadox3D() {
         </div>
       </div>
 
-      {/* Historical note */}
-      <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 text-xs text-gray-400">
-        <span className="text-white font-bold">📜 Historical Note:</span> The
-        EPR paper (Einstein, Podolsky, Rosen, 1935) argued that quantum
+      {/* Historical note - UPDATED TO LIGHT THEME */}
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-lg p-4 text-sm text-gray-800">
+        <span className="text-amber-900 font-bold">📜 Historical Note:</span>{" "}
+        The EPR paper (Einstein, Podolsky, Rosen, 1935) argued that quantum
         mechanics must be incomplete. It took until 1964 for John Bell to show
         how to test this experimentally, and until 1982 for Alain Aspect to
         perform a definitive test. The result?{" "}
-        <span className="text-green-400 font-bold">Bohr was right.</span>{" "}
+        <span className="text-green-700 font-bold">Bohr was right.</span>{" "}
         Einstein's hidden variables cannot explain quantum correlations.
       </div>
     </div>

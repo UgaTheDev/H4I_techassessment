@@ -214,20 +214,21 @@ export function EPRParadox() {
           description="Walk through the EPR paradox step by step"
         />
 
-        <div className="bg-white rounded-xl p-8 mb-8 shadow-sm overflow-hidden">
-          <h2 className="font-display text-2xl font-semibold mb-6">
+        <div className="bg-white rounded-xl p-8 mb-8 border-2 border-gray-200 shadow-sm">
+          <h2 className="font-display text-2xl font-semibold mb-6 text-gray-900">
             The Great Debate
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-rose-100 to-red-50 p-6 rounded-xl border-2 border-rose-300">
+            {/* Einstein's side - light rose/red theme */}
+            <div className="bg-gradient-to-br from-rose-50 to-red-50 p-6 rounded-xl border-2 border-rose-200">
               <h3 className="font-bold text-rose-800 text-lg mb-3 flex items-center gap-2">
                 🎩 Einstein's Argument (1935)
               </h3>
-              <p className="text-gray-700 mb-3">
+              <p className="text-gray-800 mb-3">
                 "If measuring Alice's particle instantly determines Bob's result
                 (even light-years away), then either:
               </p>
-              <ol className="text-gray-700 space-y-1 ml-4 list-decimal">
+              <ol className="text-gray-800 space-y-1 ml-4 list-decimal">
                 <li>
                   Information travels faster than light (violates relativity!)
                 </li>
@@ -235,37 +236,43 @@ export function EPRParadox() {
                   The particles had definite values all along (hidden variables)
                 </li>
               </ol>
-              <p className="text-gray-700 mt-3">
+              <p className="text-gray-800 mt-3">
                 Since (1) is impossible, (2) must be true. Therefore, quantum
                 mechanics is incomplete!"
               </p>
             </div>
-            <div className="bg-gradient-to-br from-blue-100 to-indigo-50 p-6 rounded-xl border-2 border-blue-300">
+
+            {/* Bohr's side - light blue theme */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200">
               <h3 className="font-bold text-blue-800 text-lg mb-3 flex items-center gap-2">
                 🔬 Bohr's Response
               </h3>
-              <p className="text-gray-700 mb-3">
+              <p className="text-gray-800 mb-3">
                 "You can't separate the quantum system from the measurement
                 apparatus. The particles form a single, non-local quantum state.
               </p>
-              <p className="text-gray-700">
+              <p className="text-gray-800">
                 The correlation doesn't transmit information — Alice sees random
                 results, as does Bob. The correlation only appears when they
                 compare notes (at light speed or slower).
               </p>
-              <p className="text-gray-700 mt-3 font-medium">
+              <p className="text-gray-800 mt-3 font-medium">
                 Quantum mechanics is complete — you just have to accept
                 non-locality!"
               </p>
             </div>
           </div>
-          <div className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 p-5 rounded-xl border border-amber-200">
-            <p className="text-gray-700">
-              <span className="font-semibold">📚 Historical Note:</span> The EPR
-              paper (Einstein, Podolsky, Rosen, 1935) argued that quantum
-              mechanics must be incomplete. It took until 1964 for John Bell to
-              show how to test this experimentally, and until 1982 for Alain
-              Aspect to perform a definitive test. The result?{" "}
+
+          {/* Historical note - light amber/yellow theme */}
+          <div className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 rounded-xl border-2 border-amber-200">
+            <p className="text-gray-800">
+              <span className="font-semibold text-amber-900">
+                📚 Historical Note:
+              </span>{" "}
+              The EPR paper (Einstein, Podolsky, Rosen, 1935) argued that
+              quantum mechanics must be incomplete. It took until 1964 for John
+              Bell to show how to test this experimentally, and until 1982 for
+              Alain Aspect to perform a definitive test. The result?{" "}
               <span className="text-green-700 font-semibold">
                 Bohr was right.
               </span>{" "}

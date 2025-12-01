@@ -1,349 +1,339 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
   Sphere,
   Html,
-  Line,
   RoundedBox,
-  Cylinder,
+  Float,
+  Stars,
 } from "@react-three/drei";
 import * as THREE from "three";
 
-function PhotonPair({
+type ViewMode = "einstein" | "bohr" | "reality";
+
+interface ParticleState {
+  position: [number, number, number];
+  spin: "up" | "down" | "superposition";
+  measured: boolean;
+}
+
+function ThoughtBubble({
+  position,
+  text,
+  color,
+  visible,
+}: {
+  position: [number, number, number];
+  text: string;
+  color: string;
+  visible: boolean;
+}) {
+  if (!visible) return null;
+
+  return (
+    <Html position={position} center>
+      <div
+        className="px-4 py-2 rounded-xl text-sm max-w-[200px] text-center font-medium shadow-xl animate-fade-in"
+        style={{
+          backgroundColor: color,
+          color: "white",
+          border: "2px solid rgba(255,255,255,0.3)",
+        }}
+      >
+        {text}
+      </div>
+    </Html>
+  );
+}
+
+function Scientist({
+  position,
+  name,
+  color,
+  thinking,
+  thought,
+}: {
+  position: [number, number, number];
+  name: string;
+  color: string;
+  thinking: boolean;
+  thought: string;
+}) {
+  return (
+    <group position={position}>
+      {/* Body */}
+      <RoundedBox args={[0.6, 1, 0.4]} radius={0.1} position={[0, 0, 0]}>
+        <meshStandardMaterial color={color} />
+      </RoundedBox>
+
+      {/* Head */}
+      <Sphere args={[0.25, 32, 32]} position={[0, 0.75, 0]}>
+        <meshStandardMaterial color="#fcd34d" />
+      </Sphere>
+
+      {/* Name */}
+      <Html position={[0, -0.8, 0]} center>
+        <div
+          className="px-2 py-1 rounded text-xs font-bold text-white"
+          style={{ backgroundColor: color }}
+        >
+          {name}
+        </div>
+      </Html>
+
+      {/* Thought bubble */}
+      <ThoughtBubble
+        position={[0, 1.6, 0]}
+        text={thought}
+        color={color}
+        visible={thinking}
+      />
+    </group>
+  );
+}
+
+function EPRParticle({
+  state,
+  label,
+  onMeasure,
+  viewMode,
+}: {
+  state: ParticleState;
+  label: string;
+  color: string;
+  onMeasure: () => void;
+  viewMode: ViewMode;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+
+  useFrame((clock) => {
+    if (meshRef.current && state.spin === "superposition") {
+      meshRef.current.rotation.y += 0.03;
+      meshRef.current.rotation.x = Math.sin(clock.clock.elapsedTime * 2) * 0.3;
+    }
+    if (glowRef.current && state.spin === "superposition") {
+      const scale = 1 + Math.sin(clock.clock.elapsedTime * 4) * 0.15;
+      glowRef.current.scale.set(scale, scale, scale);
+    }
+  });
+
+  const getColor = () => {
+    if (state.spin === "superposition") return "#d946ef";
+    if (state.spin === "up") return "#3b82f6";
+    return "#ef4444";
+  };
+
+  // Hidden variable visualization (Einstein's view)
+  const showHiddenVariable =
+    viewMode === "einstein" && state.spin === "superposition";
+
+  return (
+    <group position={state.position}>
+      {/* Glow */}
+      <Sphere ref={glowRef} args={[0.4, 32, 32]}>
+        <meshBasicMaterial color={getColor()} transparent opacity={0.15} />
+      </Sphere>
+
+      {/* Particle */}
+      <Float
+        speed={state.spin === "superposition" ? 3 : 0}
+        floatIntensity={0.3}
+      >
+        <Sphere ref={meshRef} args={[0.25, 32, 32]} onClick={onMeasure}>
+          <meshStandardMaterial
+            color={getColor()}
+            emissive={getColor()}
+            emissiveIntensity={0.5}
+          />
+        </Sphere>
+      </Float>
+
+      {/* Spin arrow for measured particles */}
+      {state.measured && (
+        <mesh
+          position={[0, state.spin === "up" ? 0.4 : -0.4, 0]}
+          rotation={[0, 0, state.spin === "down" ? Math.PI : 0]}
+        >
+          <coneGeometry args={[0.1, 0.2, 16]} />
+          <meshStandardMaterial
+            color={getColor()}
+            emissive={getColor()}
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+      )}
+
+      {/* Hidden variable indicator (Einstein's view) */}
+      {showHiddenVariable && (
+        <group>
+          <Sphere args={[0.08, 16, 16]} position={[0.35, 0, 0]}>
+            <meshBasicMaterial color="#fbbf24" />
+          </Sphere>
+          <Html position={[0.5, 0.2, 0]} center>
+            <div className="text-yellow-400 text-xs font-bold bg-black/50 px-1 rounded">
+              λ
+            </div>
+          </Html>
+        </group>
+      )}
+
+      {/* Label */}
+      <Html position={[0, -0.6, 0]} center>
+        <div
+          className={`px-2 py-1 rounded text-xs font-bold ${
+            state.measured
+              ? state.spin === "up"
+                ? "bg-blue-500 text-white"
+                : "bg-red-500 text-white"
+              : "bg-purple-500 text-white"
+          }`}
+        >
+          {label}: {state.measured ? (state.spin === "up" ? "↑" : "↓") : "?"}
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+function EntanglementConnection({
   active,
-  onArrive,
+  viewMode,
 }: {
   active: boolean;
-  onArrive: (side: "left" | "right") => void;
+  viewMode: ViewMode;
 }) {
-  const leftRef = useRef<THREE.Mesh>(null);
-  const rightRef = useRef<THREE.Mesh>(null);
-  const [leftProgress, setLeftProgress] = useState(0);
-  const [rightProgress, setRightProgress] = useState(0);
+  const ref = useRef<THREE.Mesh>(null);
 
-  useEffect(() => {
-    if (active) {
-      setLeftProgress(0);
-      setRightProgress(0);
-    }
-  }, [active]);
-
-  useFrame((_, delta) => {
-    if (!active) return;
-
-    if (leftProgress < 1) {
-      const newProgress = Math.min(leftProgress + delta * 0.8, 1);
-      setLeftProgress(newProgress);
-      if (leftRef.current) {
-        leftRef.current.position.x = THREE.MathUtils.lerp(0, -4, newProgress);
-      }
-      if (newProgress >= 1) onArrive("left");
-    }
-
-    if (rightProgress < 1) {
-      const newProgress = Math.min(rightProgress + delta * 0.8, 1);
-      setRightProgress(newProgress);
-      if (rightRef.current) {
-        rightRef.current.position.x = THREE.MathUtils.lerp(0, 4, newProgress);
-      }
-      if (newProgress >= 1) onArrive("right");
+  useFrame((state) => {
+    if (ref.current && active) {
+      const opacity = 0.3 + Math.sin(state.clock.elapsedTime * 4) * 0.2;
+      (ref.current.material as THREE.MeshBasicMaterial).opacity = opacity;
     }
   });
 
   if (!active) return null;
 
+  const connectionColor = viewMode === "einstein" ? "#fbbf24" : "#d946ef";
+
   return (
     <>
-      <Sphere ref={leftRef} args={[0.08, 16, 16]} position={[0, 0, 0]}>
-        <meshStandardMaterial
-          color="#06b6d4"
-          emissive="#06b6d4"
-          emissiveIntensity={2}
-          transparent
-          opacity={1 - leftProgress * 0.5}
-        />
-      </Sphere>
-      <Sphere ref={rightRef} args={[0.08, 16, 16]} position={[0, 0, 0]}>
-        <meshStandardMaterial
-          color="#f97316"
-          emissive="#f97316"
-          emissiveIntensity={2}
-          transparent
-          opacity={1 - rightProgress * 0.5}
-        />
-      </Sphere>
+      <mesh ref={ref} position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.02, 0.02, 6, 16]} />
+        <meshBasicMaterial color={connectionColor} transparent opacity={0.4} />
+      </mesh>
+
+      {/* Wave particles */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <WaveParticle key={i} index={i} color={connectionColor} />
+      ))}
+
+      {/* Spooky action indicator for Bohr's view */}
+      {viewMode === "bohr" && (
+        <Html position={[0, 0.5, 0]} center>
+          <div className="text-purple-300 text-xs animate-pulse">
+            ⚡ "Spooky Action" ⚡
+          </div>
+        </Html>
+      )}
     </>
   );
 }
 
-interface PolarizingSwitchProps {
-  position: [number, number, number];
-  angle: number;
-  switching: boolean;
-  side: "left" | "right";
-}
-
-function PolarizingSwitch({
-  position,
-  angle,
-  switching,
-  side,
-}: PolarizingSwitchProps) {
-  const groupRef = useRef<THREE.Group>(null);
-  const [currentAngle, setCurrentAngle] = useState(angle);
-
-  useFrame(() => {
-    // Smooth angle transition
-    setCurrentAngle((prev) => THREE.MathUtils.lerp(prev, angle, 0.1));
-
-    if (groupRef.current) {
-      groupRef.current.rotation.z = (currentAngle * Math.PI) / 180;
-    }
-  });
-
-  const baseColor = side === "left" ? "#06b6d4" : "#f97316";
-
-  return (
-    <group position={position}>
-      {/* Mounting frame */}
-      <RoundedBox args={[0.15, 1.4, 1.4]} radius={0.03}>
-        <meshStandardMaterial color="#374151" metalness={0.7} roughness={0.3} />
-      </RoundedBox>
-
-      {/* Rotating polarizer */}
-      <group ref={groupRef}>
-        <RoundedBox args={[0.08, 1.1, 1.1]} radius={0.02}>
-          <meshStandardMaterial
-            color={baseColor}
-            transparent
-            opacity={0.4}
-            metalness={0.5}
-            roughness={0.2}
-          />
-        </RoundedBox>
-
-        {/* Polarization lines */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <mesh key={i} position={[0.05, -0.4 + i * 0.16, 0]}>
-            <boxGeometry args={[0.02, 0.02, 0.9]} />
-            <meshStandardMaterial color="#1f2937" />
-          </mesh>
-        ))}
-
-        {/* Angle indicator */}
-        <mesh position={[0, 0.7, 0]}>
-          <coneGeometry args={[0.08, 0.15, 8]} />
-          <meshStandardMaterial color={baseColor} />
-        </mesh>
-      </group>
-
-      {/* Switching indicator */}
-      {switching && (
-        <Sphere args={[0.1, 16, 16]} position={[0, -0.9, 0]}>
-          <meshBasicMaterial color="#22c55e" />
-        </Sphere>
-      )}
-
-      {/* Label */}
-      <Html position={[0, 1.1, 0]} center>
-        <div
-          className={`px-2 py-1 rounded text-xs font-bold whitespace-nowrap ${
-            switching
-              ? "bg-green-500 text-white animate-pulse"
-              : "bg-gray-800 text-white"
-          }`}
-        >
-          {currentAngle.toFixed(0)}°
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-function Detector({
-  position,
-  detections,
-  flash,
-  side,
-}: {
-  position: [number, number, number];
-  detections: number;
-  flash: boolean;
-  side: "left" | "right";
-}) {
-  const color = side === "left" ? "#06b6d4" : "#f97316";
-
-  return (
-    <group position={position}>
-      <RoundedBox args={[0.6, 1, 1]} radius={0.08}>
-        <meshStandardMaterial
-          color={flash ? color : "#1f2937"}
-          emissive={flash ? color : "#000000"}
-          emissiveIntensity={flash ? 1 : 0}
-          metalness={0.6}
-          roughness={0.3}
-        />
-      </RoundedBox>
-
-      {/* Detector window */}
-      <Cylinder
-        args={[0.2, 0.2, 0.1, 32]}
-        position={[side === "left" ? 0.25 : -0.25, 0, 0]}
-        rotation={[0, 0, Math.PI / 2]}
-      >
-        <meshStandardMaterial color="#0f172a" />
-      </Cylinder>
-
-      <Html position={[0, -0.8, 0]} center>
-        <div className="text-center">
-          <div className="bg-gray-800 text-white px-2 py-1 rounded text-xs font-mono">
-            {detections}
-          </div>
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-function PhotonSource({ emitting }: { emitting: boolean }) {
+function WaveParticle({ index, color }: { index: number; color: string }) {
   const ref = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * 0.5;
-      if (emitting) {
-        const scale = 1 + Math.sin(state.clock.elapsedTime * 8) * 0.15;
-        ref.current.scale.set(scale, scale, scale);
-      }
+      const t = state.clock.elapsedTime;
+      ref.current.position.x = -3 + index * 0.5;
+      ref.current.position.y = Math.sin(t * 4 + index * 0.5) * 0.2;
     }
   });
 
   return (
-    <group position={[0, 0, 0]}>
-      {/* Source crystal */}
-      <mesh ref={ref}>
-        <octahedronGeometry args={[0.25, 0]} />
-        <meshStandardMaterial
-          color="#d946ef"
-          emissive="#d946ef"
-          emissiveIntensity={emitting ? 1 : 0.3}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-
-      {/* Laser input */}
-      <Cylinder
-        args={[0.08, 0.08, 0.6, 16]}
-        position={[0, 0, -0.5]}
-        rotation={[Math.PI / 2, 0, 0]}
-      >
-        <meshStandardMaterial color="#4b5563" metalness={0.8} />
-      </Cylinder>
-
-      {/* Input beam */}
-      <mesh position={[0, 0, -0.9]}>
-        <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
-        <meshBasicMaterial color="#a855f7" transparent opacity={0.6} />
-      </mesh>
-
-      <Html position={[0, 0.6, 0]} center>
-        <div className="bg-purple-500/90 text-white px-2 py-1 rounded text-xs font-bold">
-          BBO Crystal
-        </div>
-      </Html>
-    </group>
+    <Sphere ref={ref} args={[0.04, 8, 8]}>
+      <meshBasicMaterial color={color} transparent opacity={0.6} />
+    </Sphere>
   );
 }
 
 function Scene({
-  leftAngle,
-  rightAngle,
-  switching,
-  leftDetections,
-  rightDetections,
-  photonActive,
-  leftFlash,
-  rightFlash,
-  onPhotonArrive,
+  aliceState,
+  bobState,
+  viewMode,
+  showThoughts,
+  onMeasure,
 }: {
-  leftAngle: number;
-  rightAngle: number;
-  switching: boolean;
-  leftDetections: number;
-  rightDetections: number;
-  coincidences: number;
-  photonActive: boolean;
-  leftFlash: boolean;
-  rightFlash: boolean;
-  onPhotonArrive: (side: "left" | "right") => void;
+  aliceState: ParticleState;
+  bobState: ParticleState;
+  viewMode: ViewMode;
+  showThoughts: boolean;
+  onMeasure: (who: "alice" | "bob") => void;
 }) {
+  const entangled =
+    aliceState.spin === "superposition" && bobState.spin === "superposition";
+
+  const einsteinThought =
+    viewMode === "einstein"
+      ? "The particles have definite values all along (hidden variables λ). Measurement just reveals them!"
+      : "";
+
+  const bohrThought =
+    viewMode === "bohr"
+      ? "The particles have no definite state until measured. Measurement creates reality!"
+      : "";
+
   return (
     <>
-      <color attach="background" args={["#0f172a"]} />
+      <color attach="background" args={["#0a0a1a"]} />
+      <Stars radius={100} depth={50} count={1000} factor={4} fade />
       <ambientLight intensity={0.3} />
-      <pointLight position={[0, 5, 5]} intensity={1} />
-      <pointLight position={[-5, 0, 3]} intensity={0.5} color="#06b6d4" />
-      <pointLight position={[5, 0, 3]} intensity={0.5} color="#f97316" />
+      <pointLight position={[0, 10, 5]} intensity={1} />
+      <pointLight position={[-5, 5, 5]} intensity={0.5} color="#06b6d4" />
+      <pointLight position={[5, 5, 5]} intensity={0.5} color="#f97316" />
 
-      {/* Beam paths */}
-      <Line
-        points={[
-          [0, 0, 0],
-          [-4.5, 0, 0],
-        ]}
+      {/* Scientists */}
+      <Scientist
+        position={[-4, 0, 1.5]}
+        name="Einstein"
+        color="#dc2626"
+        thinking={showThoughts && viewMode === "einstein"}
+        thought={einsteinThought}
+      />
+
+      <Scientist
+        position={[4, 0, 1.5]}
+        name="Bohr"
+        color="#2563eb"
+        thinking={showThoughts && viewMode === "bohr"}
+        thought={bohrThought}
+      />
+
+      {/* Particles */}
+      <EPRParticle
+        state={aliceState}
+        label="Alice"
         color="#06b6d4"
-        lineWidth={1}
-        transparent
-        opacity={0.2}
+        onMeasure={() => onMeasure("alice")}
+        viewMode={viewMode}
       />
-      <Line
-        points={[
-          [0, 0, 0],
-          [4.5, 0, 0],
-        ]}
+
+      <EPRParticle
+        state={bobState}
+        label="Bob"
         color="#f97316"
-        lineWidth={1}
-        transparent
-        opacity={0.2}
+        onMeasure={() => onMeasure("bob")}
+        viewMode={viewMode}
       />
 
-      <PhotonSource emitting={photonActive} />
+      {/* Entanglement connection */}
+      <EntanglementConnection active={entangled} viewMode={viewMode} />
 
-      <PolarizingSwitch
-        position={[-2, 0, 0]}
-        angle={leftAngle}
-        switching={switching}
-        side="left"
-      />
-
-      <PolarizingSwitch
-        position={[2, 0, 0]}
-        angle={rightAngle}
-        switching={switching}
-        side="right"
-      />
-
-      <Detector
-        position={[-4, 0, 0]}
-        detections={leftDetections}
-        flash={leftFlash}
-        side="left"
-      />
-
-      <Detector
-        position={[4, 0, 0]}
-        detections={rightDetections}
-        flash={rightFlash}
-        side="right"
-      />
-
-      <PhotonPair active={photonActive} onArrive={onPhotonArrive} />
-
-      {/* Distance indicator */}
-      <Html position={[0, -1.5, 0]} center>
-        <div className="text-gray-500 text-xs">12 meters apart</div>
+      {/* Distance label */}
+      <Html position={[0, -1.2, 0]} center>
+        <div className="text-gray-400 text-xs">Separated by light-years...</div>
       </Html>
 
       <OrbitControls
@@ -356,246 +346,255 @@ function Scene({
   );
 }
 
-export function AspectExperiment3D() {
-  const [isRunning, setIsRunning] = useState(false);
-  const [leftAngle, setLeftAngle] = useState(0);
-  const [rightAngle, setRightAngle] = useState(22.5);
-  const [switching, setSwitching] = useState(false);
-  const [leftDetections, setLeftDetections] = useState(0);
-  const [rightDetections, setRightDetections] = useState(0);
-  const [coincidences, setCoincidences] = useState(0);
-  const [photonActive, setPhotonActive] = useState(false);
-  const [leftFlash, setLeftFlash] = useState(false);
-  const [rightFlash, setRightFlash] = useState(false);
-  const [_arrivedSides, setArrivedSides] = useState<Set<string>>(new Set());
+export function EPRParadox3D() {
+  const [viewMode, setViewMode] = useState<ViewMode>("reality");
+  const [showThoughts, setShowThoughts] = useState(true);
+  const [aliceState, setAliceState] = useState<ParticleState>({
+    position: [-3, 0, 0],
+    spin: "superposition",
+    measured: false,
+  });
+  const [bobState, setBobState] = useState<ParticleState>({
+    position: [3, 0, 0],
+    spin: "superposition",
+    measured: false,
+  });
+  const [experimentCount, setExperimentCount] = useState(0);
 
-  // Angle configurations for switching
-  const angleConfigs = [
-    { left: 0, right: 22.5 },
-    { left: 0, right: 67.5 },
-    { left: 45, right: 22.5 },
-    { left: 45, right: 67.5 },
-  ];
-  const [configIndex, setConfigIndex] = useState(0);
+  const handleMeasure = (who: "alice" | "bob") => {
+    if (aliceState.measured && bobState.measured) return;
 
-  // Calculate quantum prediction
-  const angleDiff = (Math.abs(leftAngle - rightAngle) * Math.PI) / 180;
-  const quantumPrediction = Math.cos(2 * angleDiff) ** 2;
+    // Random measurement result
+    const result = Math.random() > 0.5 ? "up" : "down";
+    const antiResult = result === "up" ? "down" : "up";
 
-  useEffect(() => {
-    if (!isRunning) return;
+    if (who === "alice") {
+      setAliceState((prev) => ({
+        ...prev,
+        spin: result as "up" | "down",
+        measured: true,
+      }));
+      // Instant correlation (spooky action!)
+      setBobState((prev) => ({
+        ...prev,
+        spin: antiResult as "up" | "down",
+        measured: true,
+      }));
+    } else {
+      setBobState((prev) => ({
+        ...prev,
+        spin: result as "up" | "down",
+        measured: true,
+      }));
+      setAliceState((prev) => ({
+        ...prev,
+        spin: antiResult as "up" | "down",
+        measured: true,
+      }));
+    }
 
-    // Emit photon pairs
-    const emitInterval = setInterval(() => {
-      setPhotonActive(true);
-      setArrivedSides(new Set());
-
-      // Random angle switching (simulating Aspect's fast switching)
-      if (Math.random() > 0.7) {
-        setSwitching(true);
-        const newIndex = (configIndex + 1) % angleConfigs.length;
-        setConfigIndex(newIndex);
-        setLeftAngle(angleConfigs[newIndex].left);
-        setRightAngle(angleConfigs[newIndex].right);
-        setTimeout(() => setSwitching(false), 300);
-      }
-    }, 1500);
-
-    return () => clearInterval(emitInterval);
-  }, [isRunning, configIndex]);
-
-  const handlePhotonArrive = (side: "left" | "right") => {
-    setArrivedSides((prev) => {
-      const newSet = new Set(prev);
-      newSet.add(side);
-
-      if (newSet.size === 2) {
-        // Both photons arrived
-        setPhotonActive(false);
-
-        // Calculate detection based on quantum mechanics
-        const detected = Math.random() < quantumPrediction;
-
-        if (detected) {
-          setLeftDetections((d) => d + 1);
-          setRightDetections((d) => d + 1);
-          setCoincidences((c) => c + 1);
-          setLeftFlash(true);
-          setRightFlash(true);
-          setTimeout(() => {
-            setLeftFlash(false);
-            setRightFlash(false);
-          }, 200);
-        }
-      }
-
-      return newSet;
-    });
+    setExperimentCount((c) => c + 1);
   };
 
   const handleReset = () => {
-    setIsRunning(false);
-    setLeftDetections(0);
-    setRightDetections(0);
-    setCoincidences(0);
-    setPhotonActive(false);
-    setConfigIndex(0);
-    setLeftAngle(0);
-    setRightAngle(22.5);
+    setAliceState({
+      position: [-3, 0, 0],
+      spin: "superposition",
+      measured: false,
+    });
+    setBobState({
+      position: [3, 0, 0],
+      spin: "superposition",
+      measured: false,
+    });
   };
 
-  const coincidenceRate =
-    leftDetections > 0
-      ? ((coincidences / leftDetections) * 100).toFixed(1)
-      : "—";
+  const viewDescriptions: Record<
+    ViewMode,
+    { title: string; description: string }
+  > = {
+    einstein: {
+      title: "Einstein's View (Local Realism)",
+      description:
+        "The particles carry hidden variables (λ) from the source. Their properties are predetermined — measurement simply reveals what was always there. No spooky action needed!",
+    },
+    bohr: {
+      title: "Bohr's View (Copenhagen Interpretation)",
+      description:
+        "The particles exist in genuine superposition until measured. The measurement on one particle instantaneously affects the other — 'spooky action at a distance'!",
+    },
+    reality: {
+      title: "What Experiments Show",
+      description:
+        "Bell test experiments prove Einstein wrong! The correlations are too strong to be explained by hidden variables. Quantum mechanics is correct.",
+    },
+  };
 
   return (
     <div className="space-y-4">
-      <div className="h-[450px] relative glass-card rounded-xl overflow-hidden border-2 border-amber-200">
-        <Canvas camera={{ position: [0, 3, 8], fov: 50 }}>
+      <div className="h-[450px] relative glass-card rounded-xl overflow-hidden border-2 border-rose-200">
+        <Canvas camera={{ position: [0, 3, 10], fov: 50 }}>
           <Scene
-            leftAngle={leftAngle}
-            rightAngle={rightAngle}
-            switching={switching}
-            leftDetections={leftDetections}
-            rightDetections={rightDetections}
-            coincidences={coincidences}
-            photonActive={photonActive}
-            leftFlash={leftFlash}
-            rightFlash={rightFlash}
-            onPhotonArrive={handlePhotonArrive}
+            aliceState={aliceState}
+            bobState={bobState}
+            viewMode={viewMode}
+            showThoughts={showThoughts}
+            onMeasure={handleMeasure}
           />
         </Canvas>
 
-        {/* Info overlay */}
-        <div className="absolute top-4 left-4 bg-black/85 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-amber-500/30 max-w-xs">
-          <p className="text-amber-400 font-bold mb-1">
-            🏆 Aspect's 1982 Experiment
+        {/* View mode indicator - UPDATED TO LIGHT THEME */}
+        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border-2 border-rose-300 max-w-sm">
+          <p className="text-rose-700 font-bold mb-1">
+            {viewDescriptions[viewMode].title}
           </p>
-          <p className="text-sm text-gray-200">
-            The polarizer angles switch randomly while photons are in flight —
-            ruling out any "local hidden variable" explanations.
+          <p className="text-sm text-gray-700">
+            {viewDescriptions[viewMode].description}
           </p>
         </div>
 
-        {/* Switching indicator */}
-        {switching && (
-          <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg font-bold animate-pulse">
-            ⚡ SWITCHING!
-          </div>
-        )}
+        {/* Instruction */}
+        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg text-xs text-gray-700">
+          🔬 Click a particle to measure its spin!
+        </div>
       </div>
 
-      {/* Angle display */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="glass-card p-4 rounded-lg border-2 border-cyan-200">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-cyan-700">
-              Left Polarizer
-            </span>
-            <span className="text-2xl font-bold text-cyan-900">
-              {leftAngle}°
-            </span>
-          </div>
-          <div className="text-xs text-gray-500">
-            Detections: {leftDetections}
-          </div>
-        </div>
-
-        <div className="glass-card p-4 rounded-lg border-2 border-orange-200">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-orange-700">
-              Right Polarizer
-            </span>
-            <span className="text-2xl font-bold text-orange-900">
-              {rightAngle}°
-            </span>
-          </div>
-          <div className="text-xs text-gray-500">
-            Detections: {rightDetections}
-          </div>
-        </div>
+      {/* View mode selector */}
+      <div className="flex gap-2">
+        {(["einstein", "bohr", "reality"] as ViewMode[]).map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setViewMode(mode)}
+            className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
+              viewMode === mode
+                ? mode === "einstein"
+                  ? "bg-red-500 text-white"
+                  : mode === "bohr"
+                  ? "bg-blue-500 text-white"
+                  : "bg-green-500 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            {mode === "einstein"
+              ? "🎩 Einstein"
+              : mode === "bohr"
+              ? "🔬 Bohr"
+              : "📊 Reality"}
+          </button>
+        ))}
       </div>
 
       {/* Results */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="glass-card p-4 rounded-lg border-2 border-purple-200">
-          <div className="text-xs text-purple-600 mb-1">Angle Difference</div>
-          <div className="text-2xl font-bold text-purple-900">
-            {Math.abs(leftAngle - rightAngle)}°
-          </div>
-        </div>
-
-        <div className="glass-card p-4 rounded-lg border-2 border-blue-200">
-          <div className="text-xs text-blue-600 mb-1">Quantum Prediction</div>
-          <div className="text-2xl font-bold text-blue-900">
-            {(quantumPrediction * 100).toFixed(1)}%
-          </div>
-        </div>
-
-        <div className="glass-card p-4 rounded-lg border-2 border-green-200">
-          <div className="text-xs text-green-600 mb-1">
-            Measured Coincidences
-          </div>
-          <div className="text-2xl font-bold text-green-900">
-            {coincidenceRate}%
-          </div>
-        </div>
-      </div>
-
-      {/* Bell violation indicator */}
-      <div className="bg-gradient-to-r from-red-900/30 to-purple-900/30 border-2 border-red-500/50 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-bold text-white">
-              Bell Inequality Violation
+      {aliceState.measured && bobState.measured && (
+        <div className="bg-gradient-to-r from-cyan-50 to-orange-50 border-2 border-purple-300 rounded-lg p-4">
+          <div className="flex justify-around items-center">
+            <div className="text-center">
+              <div className="text-cyan-700 text-sm font-medium">
+                Alice measured
+              </div>
+              <div
+                className={`text-3xl font-bold ${
+                  aliceState.spin === "up" ? "text-blue-600" : "text-red-600"
+                }`}
+              >
+                {aliceState.spin === "up" ? "↑ Up" : "↓ Down"}
+              </div>
             </div>
-            <div className="text-sm text-gray-300">
-              Classical limit: S ≤ 2 | Quantum: S = 2√2 ≈ 2.83
+            <div className="text-purple-600 text-2xl font-bold">⟷</div>
+            <div className="text-center">
+              <div className="text-orange-700 text-sm font-medium">
+                Bob measured
+              </div>
+              <div
+                className={`text-3xl font-bold ${
+                  bobState.spin === "up" ? "text-blue-600" : "text-red-600"
+                }`}
+              >
+                {bobState.spin === "up" ? "↑ Up" : "↓ Down"}
+              </div>
             </div>
           </div>
-          <div className="text-4xl font-bold text-red-400">S = 2.83</div>
+          <div className="text-center mt-2 text-gray-600 text-sm font-medium">
+            Always anti-correlated! ({experimentCount} experiments)
+          </div>
         </div>
-        <div className="mt-2 text-xs text-gray-400">
-          Aspect's experiment measured S ≈ 2.70 ± 0.05, violating Bell's
-          inequality by over 40 standard deviations!
-        </div>
-      </div>
+      )}
 
       {/* Controls */}
       <div className="flex gap-4">
         <button
-          onClick={() => setIsRunning(!isRunning)}
-          className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-            isRunning
-              ? "bg-red-500 text-white hover:bg-red-600"
-              : "bg-amber-500 text-white hover:bg-amber-600"
-          }`}
+          onClick={handleReset}
+          className="flex-1 py-3 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition-all"
         >
-          {isRunning ? "⏸️ Pause" : "▶️ Run Experiment"}
+          🔄 Reset & Entangle Again
         </button>
         <button
-          onClick={handleReset}
-          className="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 transition-all"
+          onClick={() => setShowThoughts(!showThoughts)}
+          className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+            showThoughts
+              ? "bg-gray-700 text-white"
+              : "bg-gray-300 text-gray-700"
+          }`}
         >
-          🔄 Reset
+          💭 {showThoughts ? "Hide" : "Show"} Thoughts
         </button>
       </div>
 
-      {/* Historical context */}
-      <div className="bg-amber-950 border border-amber-500/30 rounded-lg p-4 text-sm">
-        <p className="font-bold text-amber-300 mb-2">
-          📚 Historical Significance:
-        </p>
-        <p className="text-gray-300 text-xs leading-relaxed">
-          Alain Aspect's 1982 experiment at the University of Paris was the
-          first to use fast-switching polarizers. The switches changed the
-          measurement settings while the photons were still in flight (within
-          ~10 nanoseconds), eliminating the possibility that the photons could
-          "communicate" their measurement settings to each other. This
-          definitively ruled out local hidden variable theories and earned
-          Aspect the 2022 Nobel Prize in Physics.
-        </p>
+      {/* The paradox explained - UPDATED TO LIGHT THEME */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200 rounded-lg p-4">
+          <div className="text-rose-800 font-bold mb-2">
+            🎩 Einstein's Argument (1935)
+          </div>
+          <div className="text-sm text-gray-800 space-y-2">
+            <p>
+              "If measuring Alice's particle instantly determines Bob's result
+              (even light-years away), then either:
+            </p>
+            <ol className="list-decimal list-inside pl-2 space-y-1">
+              <li>
+                Information travels faster than light (violates relativity!)
+              </li>
+              <li>
+                The particles had definite values all along (hidden variables)
+              </li>
+            </ol>
+            <p>
+              Since (1) is impossible, (2) must be true. Therefore, quantum
+              mechanics is incomplete!"
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-4">
+          <div className="text-blue-800 font-bold mb-2">🔬 Bohr's Response</div>
+          <div className="text-sm text-gray-800 space-y-2">
+            <p>
+              "You can't separate the quantum system from the measurement
+              apparatus. The particles form a single, non-local quantum state.
+            </p>
+            <p>
+              The correlation doesn't transmit information — Alice sees random
+              results, as does Bob. The correlation only appears when they
+              compare notes (at light speed or slower).
+            </p>
+            <p>
+              Quantum mechanics is complete — you just have to accept
+              non-locality!"
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Historical note - UPDATED TO LIGHT THEME */}
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-lg p-4 text-sm text-gray-800">
+        <span className="text-amber-900 font-bold">📜 Historical Note:</span>{" "}
+        The EPR paper (Einstein, Podolsky, Rosen, 1935) argued that quantum
+        mechanics must be incomplete. It took until 1964 for John Bell to show
+        how to test this experimentally, and until 1982 for Alain Aspect to
+        perform a definitive test. The result?{" "}
+        <span className="text-green-700 font-bold">Bohr was right.</span>{" "}
+        Einstein's hidden variables cannot explain quantum correlations.
       </div>
     </div>
   );

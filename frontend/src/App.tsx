@@ -262,7 +262,7 @@ function AppContent() {
                   <div className="text-2xl font-bold text-green-400">
                     {unlockedAchievements.size}
                   </div>
-                  <div className="text-gray-500">Achievements</div>
+                  <div className="text-gray-500">Achievements Completed!</div>
                 </div>
               </div>
 

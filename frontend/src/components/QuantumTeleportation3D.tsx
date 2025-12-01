@@ -556,7 +556,7 @@ export function QuantumTeleportation3D() {
       {/* Protocol diagram */}
       <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
         <div className="text-gray-500 mb-2">
-          // Quantum Teleportation Protocol
+          Quantum Teleportation Protocol:
         </div>
         <div className="space-y-1">
           <div
@@ -564,28 +564,28 @@ export function QuantumTeleportation3D() {
               step === "initial" ? "text-emerald-400" : "text-gray-500"
             }
           >
-            Alice: |ψ⟩ = α|0⟩ + β|1⟩ // Unknown quantum state
+            Alice: |ψ⟩ = α|0⟩ + β|1⟩ (Unknown quantum state)
           </div>
           <div
             className={
               step === "entangle" ? "text-emerald-400" : "text-gray-500"
             }
           >
-            Entangle: |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 // Bell pair shared
+            Entangle: |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 (Bell pair shared)
           </div>
           <div
             className={
               step === "bell_measure" ? "text-emerald-400" : "text-gray-500"
             }
           >
-            Measure: |ψ⟩⊗|A⟩ → {classicalBits} // 2 classical bits
+            Measure: |ψ⟩⊗|A⟩ → {classicalBits} (2 classical bits)
           </div>
           <div
             className={
               step === "classical_send" ? "text-emerald-400" : "text-gray-500"
             }
           >
-            Send: Alice --({classicalBits})--→ Bob // Classical channel
+            Send: Alice --({classicalBits})--→ Bob (Classical channel)
           </div>
           <div
             className={

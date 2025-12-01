@@ -191,7 +191,6 @@ export function Timeline({ events, title = "Timeline" }: TimelineProps) {
   );
 }
 
-// Pre-made timeline for quantum entanglement history
 export const QUANTUM_TIMELINE: TimelineEvent[] = [
   {
     year: 1935,

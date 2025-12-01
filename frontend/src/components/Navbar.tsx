@@ -53,25 +53,20 @@ export function Navbar() {
     },
   ];
 
-  // Load progress from localStorage
   useEffect(() => {
     const loadProgress = () => {
       const saved = localStorage.getItem("quantum-learning-progress");
       if (saved) {
         try {
           setProgress(JSON.parse(saved));
-        } catch (e) {
-          // Ignore parse errors
-        }
+        } catch (e) {}
       }
     };
 
     loadProgress();
 
-    // Listen for storage changes (when other components update progress)
     window.addEventListener("storage", loadProgress);
 
-    // Also listen for custom progress events
     const handleProgressUpdate = () => loadProgress();
     window.addEventListener("progressUpdate", handleProgressUpdate);
 
@@ -81,7 +76,6 @@ export function Navbar() {
     };
   }, []);
 
-  // Track scroll for shadow effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -90,7 +84,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);

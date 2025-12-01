@@ -10,11 +10,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
-
-// PostgreSQL setup
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl:
@@ -23,10 +20,7 @@ const pool = new Pool({
       : false,
 });
 
-// Gemini AI setup
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// Initialize database tables
 async function initDB() {
   try {
     await pool.query(`
@@ -73,20 +67,16 @@ async function initDB() {
   }
 }
 
-// Parse JSON from Gemini response
 function parseGeminiJSON(text) {
   try {
-    // Try to extract JSON from markdown code blocks
     const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[1]);
     }
 
-    // Try parsing directly
     return JSON.parse(text);
   } catch (error) {
     console.error("JSON parsing error:", error);
-    // Return default response if parsing fails
     return {
       score: 0,
       feedback: "Unable to grade response. Please try again.",

@@ -125,18 +125,15 @@ function EPRParticle({
     return "#ef4444";
   };
 
-  // Hidden variable visualization (Einstein's view)
   const showHiddenVariable =
     viewMode === "einstein" && state.spin === "superposition";
 
   return (
     <group position={state.position}>
-      {/* Glow */}
       <Sphere ref={glowRef} args={[0.4, 32, 32]}>
         <meshBasicMaterial color={getColor()} transparent opacity={0.15} />
       </Sphere>
 
-      {/* Particle */}
       <Float
         speed={state.spin === "superposition" ? 3 : 0}
         floatIntensity={0.3}

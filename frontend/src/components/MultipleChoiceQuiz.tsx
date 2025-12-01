@@ -23,7 +23,7 @@ export function MultipleChoiceQuiz({ question }: Props) {
 
   useEffect(() => {
     loadResults();
-    // Load streak from localStorage
+
     const storedStreak = localStorage.getItem("quiz-streak");
     if (storedStreak) {
       setStreak(parseInt(storedStreak));

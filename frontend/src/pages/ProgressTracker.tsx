@@ -65,14 +65,12 @@ export function ProgressTracker() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // Load progress from localStorage on mount
   useEffect(() => {
     const savedProgress = localStorage.getItem("quantum-learning-progress");
     if (savedProgress) {
       try {
         setProgress(JSON.parse(savedProgress));
       } catch (e) {
-        // Reset if corrupted
         localStorage.setItem(
           "quantum-learning-progress",
           JSON.stringify({
@@ -85,13 +83,11 @@ export function ProgressTracker() {
     }
   }, []);
 
-  // Mark current page as visited when location changes
   useEffect(() => {
     const currentPage = PAGES.find((p) => p.path === location.pathname);
     if (!currentPage) return;
 
     setProgress((prev) => {
-      // Skip if already visited
       if (prev.pagesVisited.includes(currentPage.id)) {
         return prev;
       }
@@ -105,8 +101,6 @@ export function ProgressTracker() {
         "quantum-learning-progress",
         JSON.stringify(updated)
       );
-
-      // Check if just completed all pages
       if (
         updated.pagesVisited.length === PAGES.length &&
         prev.pagesVisited.length < PAGES.length
@@ -119,7 +113,6 @@ export function ProgressTracker() {
     });
   }, [location.pathname]);
 
-  // Listen for quiz completion events (dispatched from quiz components)
   useEffect(() => {
     const handleQuizComplete = (event: CustomEvent) => {
       const { quizId, score } = event.detail;

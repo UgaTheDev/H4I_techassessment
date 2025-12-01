@@ -98,7 +98,6 @@ export function BellTheoremVisualization() {
   const [correlation, setCorrelation] = useState(0);
 
   const calculateCorrelation = (a: number, b: number) => {
-    // Quantum correlation: -cos(a - b)
     return -Math.cos(a - b);
   };
 

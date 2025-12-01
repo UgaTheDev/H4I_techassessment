@@ -8,7 +8,6 @@ export function KeyboardShortcuts() {
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // Only trigger if not typing in an input or textarea
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement
@@ -16,19 +15,16 @@ export function KeyboardShortcuts() {
         return;
       }
 
-      // Show help with '?'
       if (e.key === "?") {
         setShowHelp(true);
         return;
       }
 
-      // Close help with Escape
       if (e.key === "Escape" && showHelp) {
         setShowHelp(false);
         return;
       }
 
-      // Navigation shortcuts
       if (e.key === "h") navigate("/");
       if (e.key === "e") navigate("/what-is-entanglement");
       if (e.key === "b") navigate("/bells-theorem");
@@ -41,7 +37,6 @@ export function KeyboardShortcuts() {
 
   return (
     <>
-      {/* Collapsed button - top left */}
       <button
         onClick={() => setShowHelp(true)}
         className="fixed top-6 left-6 z-40 glass-card px-4 py-2 rounded-full shadow-lg border-2 border-gray-200 hover:scale-105 transition-transform text-sm font-medium text-gray-700 flex items-center space-x-2"
@@ -51,7 +46,6 @@ export function KeyboardShortcuts() {
         <span>Press ? for shortcuts</span>
       </button>
 
-      {/* Help modal */}
       {showHelp && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-start p-4">
           <div className="glass-card rounded-2xl p-8 max-w-md w-full border-2 border-quantum-300 ml-0 mt-0">

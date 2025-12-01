@@ -22,7 +22,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
 
-  // Load saved theme
   useEffect(() => {
     const saved = localStorage.getItem("quantum-theme") as Theme | null;
     if (saved) {
@@ -30,7 +29,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Resolve theme and apply
   useEffect(() => {
     const applyTheme = () => {
       let resolved: "light" | "dark";
@@ -45,7 +43,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
       setResolvedTheme(resolved);
 
-      // Apply to document
       if (resolved === "dark") {
         document.documentElement.classList.add("dark");
       } else {
@@ -55,7 +52,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     applyTheme();
 
-    // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = () => {
       if (theme === "system") applyTheme();
@@ -92,7 +88,6 @@ export function useTheme() {
   return context;
 }
 
-// Simple toggle button
 export function ThemeToggle() {
   const { resolvedTheme, toggleTheme } = useTheme();
 
@@ -111,7 +106,6 @@ export function ThemeToggle() {
   );
 }
 
-// Full theme selector dropdown
 export function ThemeSelector() {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -169,7 +163,6 @@ export function ThemeSelector() {
   );
 }
 
-// CSS variables for dark mode - add to your global CSS or tailwind config
 export const darkModeStyles = `
   /* Base dark mode styles */
   .dark {

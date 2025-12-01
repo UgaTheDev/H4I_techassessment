@@ -5,8 +5,6 @@ import { ProgressTracker } from "./components/ProgressTracker";
 import { QuizStats } from "./components/QuizStats";
 import { ShareButton } from "./components/ShareButton";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
-
-// New feature imports
 import { ThemeProvider } from "./components/ThemeProvider";
 import { GlossaryProvider, GlossaryPanel } from "./components/Glossary";
 import { ELI5Provider } from "./components/ELI5Mode";
@@ -19,7 +17,6 @@ import {
 import { KnowledgeGapPanel } from "./components/KnowledgeGaps";
 import { IconTrophy, IconBook, IconChartBar } from "@tabler/icons-react";
 
-// Lazy load pages
 const Home = lazy(() =>
   import("./pages/Home").then((m) => ({ default: m.Home }))
 );
@@ -42,7 +39,7 @@ const FamousExperiments = lazy(() =>
 const Applications = lazy(() =>
   import("./pages/Applications").then((m) => ({ default: m.Applications }))
 );
-// Loading component
+
 function PageLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
@@ -60,7 +57,6 @@ function PageLoader() {
   );
 }
 
-// Consolidated floating toolbar - BOTTOM LEFT (next to QuizStats)
 function LeftToolbar({
   onOpenAchievements,
   onOpenGlossary,
@@ -109,7 +105,6 @@ function LeftToolbar({
   );
 }
 
-// Main app content
 function AppContent() {
   const {
     stats,
@@ -122,7 +117,6 @@ function AppContent() {
   const [showKnowledgeGaps, setShowKnowledgeGaps] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
 
-  // Listen for quiz events to update achievements
   useEffect(() => {
     const handleQuizComplete = (e: CustomEvent) => {
       const { correct, quizId } = e.detail;
@@ -151,7 +145,6 @@ function AppContent() {
       );
   }, [stats, updateStats]);
 
-  // Track page visits for achievements
   useEffect(() => {
     const handlePageVisit = () => {
       const progress = JSON.parse(
@@ -281,7 +274,6 @@ function AppContent() {
   );
 }
 
-// App with all providers
 function App() {
   return (
     <ThemeProvider>

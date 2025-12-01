@@ -271,7 +271,6 @@ export function AspectExperiment3D() {
       setPhotonActive(true);
       setArrivedSides(new Set());
 
-      // Randomly switch angles
       const newLeftAngle = Math.random() * Math.PI * 2;
       const newRightAngle = Math.random() * Math.PI * 2;
       setLeftAngle(newLeftAngle);

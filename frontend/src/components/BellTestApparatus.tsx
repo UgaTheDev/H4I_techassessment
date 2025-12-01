@@ -80,8 +80,6 @@ function PolarizingFilter({
   side,
 }: PolarizingFilterProps) {
   const groupRef = useRef<THREE.Group>(null);
-
-  // Create slits pattern
   const slitCount = 8;
 
   return (
@@ -90,12 +88,10 @@ function PolarizingFilter({
       position={position}
       rotation={[0, 0, (angle * Math.PI) / 180]}
     >
-      {/* Filter frame */}
       <RoundedBox args={[0.1, 1.2, 1.2]} radius={0.02}>
         <meshStandardMaterial color="#374151" metalness={0.8} roughness={0.2} />
       </RoundedBox>
 
-      {/* Filter glass with slits */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[0.05, 1, 1]} />
         <meshStandardMaterial
@@ -107,7 +103,6 @@ function PolarizingFilter({
         />
       </mesh>
 
-      {/* Polarization lines */}
       {Array.from({ length: slitCount }).map((_, i) => (
         <mesh key={i} position={[0.03, -0.4 + i * 0.1, 0]}>
           <boxGeometry args={[0.02, 0.02, 0.9]} />
@@ -115,7 +110,6 @@ function PolarizingFilter({
         </mesh>
       ))}
 
-      {/* Angle indicator arc */}
       <Html position={[0, 0.9, 0]} center>
         <div
           className={`px-2 py-1 rounded text-xs font-bold whitespace-nowrap shadow-lg ${
@@ -156,7 +150,6 @@ function Detector({
 
   return (
     <group position={position}>
-      {/* Detector body */}
       <RoundedBox args={[0.5, 0.8, 0.8]} radius={0.05}>
         <meshStandardMaterial
           color={flash ? (side === "left" ? "#06b6d4" : "#f97316") : "#1f2937"}
@@ -169,7 +162,6 @@ function Detector({
         />
       </RoundedBox>
 
-      {/* Detection window */}
       <mesh
         position={[side === "left" ? 0.2 : -0.2, 0, 0]}
         rotation={[0, 0, Math.PI / 2]}
@@ -178,7 +170,6 @@ function Detector({
         <meshStandardMaterial color="#111827" />
       </mesh>
 
-      {/* Label and count */}
       <Html position={[0, -0.6, 0]} center>
         <div className="text-center">
           <div
@@ -212,7 +203,6 @@ function PhotonSource() {
 
   return (
     <group position={[0, 0, 0]}>
-      {/* Crystal */}
       <mesh ref={ref}>
         <octahedronGeometry args={[0.3, 0]} />
         <meshStandardMaterial
@@ -224,7 +214,6 @@ function PhotonSource() {
         />
       </mesh>
 
-      {/* Glow */}
       <mesh>
         <sphereGeometry args={[0.5, 32, 32]} />
         <meshBasicMaterial color="#d946ef" transparent opacity={0.1} />
@@ -259,7 +248,6 @@ function Scene({
       <pointLight position={[0, 5, 5]} intensity={1} />
       <pointLight position={[0, -5, -5]} intensity={0.5} color="#d946ef" />
 
-      {/* Beam paths */}
       <Line
         points={[
           [-4.5, 0, 0],
@@ -311,7 +299,6 @@ function Scene({
         side="right"
       />
 
-      {/* Photons */}
       <Photon
         key={`alice-${photonKey}`}
         startPos={[0, 0, 0]}
@@ -355,12 +342,10 @@ export function BellTestApparatus() {
     bob: false,
   });
 
-  // Bell inequality calculation
   const angleDiff = (Math.abs(aliceAngle - bobAngle) * Math.PI) / 180;
   const quantumPrediction = Math.cos(angleDiff) ** 2;
-  const classicalBound = 0.75; // Bell inequality classical limit
+  const classicalBound = 0.75;
 
-  // Simulate photon emission
   useEffect(() => {
     if (!isRunning) return;
 
@@ -376,9 +361,7 @@ export function BellTestApparatus() {
     setPendingDetections((prev) => {
       const newPending = { ...prev, [side]: true };
 
-      // When both photons arrive, calculate detection
       if (newPending.alice && newPending.bob) {
-        // Quantum mechanical probability
         const detected = Math.random() < quantumPrediction;
 
         setDetections((d) => ({
@@ -416,7 +399,6 @@ export function BellTestApparatus() {
           />
         </Canvas>
 
-        {/* Info overlay */}
         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-gray-200 max-w-xs">
           <p className="text-xs text-gray-600 mb-1">🔬 Bell Test Experiment</p>
           <p className="text-sm text-gray-700">
@@ -426,7 +408,6 @@ export function BellTestApparatus() {
         </div>
       </div>
 
-      {/* Angle Controls */}
       <div className="grid grid-cols-2 gap-4">
         <div className="glass-card p-4 rounded-lg border-2 border-cyan-200">
           <label className="block text-sm font-semibold mb-2 text-cyan-700">
@@ -459,7 +440,6 @@ export function BellTestApparatus() {
         </div>
       </div>
 
-      {/* Predictions and Results */}
       <div className="grid grid-cols-3 gap-4">
         <div className="glass-card p-4 rounded-lg border-2 border-purple-200">
           <div className="text-xs text-purple-600 mb-1">Angle Difference</div>
@@ -488,7 +468,6 @@ export function BellTestApparatus() {
         </div>
       </div>
 
-      {/* Bell Inequality Indicator */}
       <div
         className={`p-4 rounded-lg border-2 ${
           quantumPrediction > classicalBound
@@ -519,12 +498,11 @@ export function BellTestApparatus() {
           </div>
         </div>
         <div className="mt-2 text-xs text-gray-600">
-          At 0°, 45°, or 90° differences, quantum predictions exceed what's
-          possible classically — proving entanglement is real!
+          At **0°**, **45°**, or **90°** differences, quantum predictions exceed
+          what's possible classically — proving entanglement is real!
         </div>
       </div>
 
-      {/* Controls */}
       <div className="flex gap-4">
         <button
           onClick={() => setIsRunning(!isRunning)}
@@ -544,7 +522,6 @@ export function BellTestApparatus() {
         </button>
       </div>
 
-      {/* Quick Angle Presets */}
       <div className="flex flex-wrap gap-2">
         <span className="text-sm text-gray-600 py-2">Quick presets:</span>
         <button

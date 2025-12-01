@@ -15,7 +15,6 @@ export function ShareButton() {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback to copying URL
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);

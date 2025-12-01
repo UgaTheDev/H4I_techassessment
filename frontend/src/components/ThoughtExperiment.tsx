@@ -282,7 +282,6 @@ export function ThoughtExperiment({
   );
 }
 
-// Pre-made thought experiment scenarios
 export const EPR_SCENARIOS: Scenario[] = [
   {
     id: "setup",

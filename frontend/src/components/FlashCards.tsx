@@ -26,7 +26,6 @@ export function FlashCards({ cards, title = "Review Cards" }: FlashCardsProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    // Load known cards from localStorage
     const stored = localStorage.getItem("quantum-flashcards-known");
     if (stored) {
       setKnownCards(new Set(JSON.parse(stored)));
@@ -235,7 +234,6 @@ export function FlashCards({ cards, title = "Review Cards" }: FlashCardsProps) {
   );
 }
 
-// Pre-made card sets for each topic
 export const ENTANGLEMENT_CARDS: FlashCard[] = [
   {
     id: "e1",

@@ -59,7 +59,6 @@ const DEFAULT_STATS: UserStats = {
 };
 
 export const ACHIEVEMENTS: Achievement[] = [
-  // Progress Achievements
   {
     id: "quantum-curious",
     name: "Quantum Curious",
@@ -97,7 +96,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     checkUnlocked: (stats) => stats.timeSpentSeconds >= 1800,
   },
 
-  // Quiz Achievements
   {
     id: "first-answer",
     name: "First Steps",
@@ -146,7 +144,6 @@ export const ACHIEVEMENTS: Achievement[] = [
       stats.totalCorrect / stats.totalAttempts >= 0.9,
   },
 
-  // Engagement Achievements
   {
     id: "deep-thinker",
     name: "Deep Thinker",
@@ -175,7 +172,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     checkUnlocked: (stats) => stats.commentsPosted >= 1,
   },
 
-  // Mastery Achievements
   {
     id: "entanglement-expert",
     name: "Entanglement Expert",
@@ -217,7 +213,6 @@ const CATEGORY_COLORS = {
   },
 };
 
-// Hook to manage achievements
 export function useAchievements() {
   const [stats, setStats] = useState<UserStats>(DEFAULT_STATS);
   const [unlockedAchievements, setUnlockedAchievements] = useState<Set<string>>(
@@ -225,29 +220,23 @@ export function useAchievements() {
   );
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(null);
 
-  // Load stats from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("quantum-user-stats");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         setStats({ ...DEFAULT_STATS, ...parsed });
-      } catch (e) {
-        // Ignore
-      }
+      } catch (e) {}
     }
 
     const savedUnlocked = localStorage.getItem("quantum-achievements-unlocked");
     if (savedUnlocked) {
       try {
         setUnlockedAchievements(new Set(JSON.parse(savedUnlocked)));
-      } catch (e) {
-        // Ignore
-      }
+      } catch (e) {}
     }
   }, []);
 
-  // Check for new achievements when stats change
   useEffect(() => {
     const newUnlocked = new Set(unlockedAchievements);
     let justUnlocked: Achievement | null = null;
@@ -275,7 +264,6 @@ export function useAchievements() {
     }
   }, [stats]);
 
-  // Track time spent
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) => {
@@ -310,7 +298,6 @@ export function useAchievements() {
   };
 }
 
-// Achievement unlock notification popup
 export function AchievementNotification({
   achievement,
   onDismiss,
@@ -361,7 +348,6 @@ export function AchievementNotification({
   );
 }
 
-// Achievement badge component
 export function AchievementBadge({
   achievement,
   unlocked,
@@ -390,7 +376,6 @@ export function AchievementBadge({
         {unlocked ? achievement.icon : <IconLock className="w-6 h-6" />}
       </div>
 
-      {/* Tooltip */}
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
         <div className="bg-gray-900 text-white text-xs rounded-lg p-2 whitespace-nowrap">
           <p className="font-bold">{achievement.name}</p>
@@ -403,7 +388,6 @@ export function AchievementBadge({
   );
 }
 
-// Full achievements panel/modal
 export function AchievementsPanel({
   isOpen,
   onClose,
@@ -430,9 +414,7 @@ export function AchievementsPanel({
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -452,7 +434,6 @@ export function AchievementsPanel({
             </button>
           </div>
 
-          {/* Progress bar */}
           <div className="mt-4">
             <div className="w-full bg-white/30 rounded-full h-3">
               <div
@@ -463,7 +444,6 @@ export function AchievementsPanel({
           </div>
         </div>
 
-        {/* Achievement grid */}
         <div className="p-6 overflow-y-auto max-h-[50vh]">
           {categories.map((category) => {
             const categoryAchievements = ACHIEVEMENTS.filter(
@@ -568,5 +548,3 @@ export function AchievementsPanel({
     </div>
   );
 }
-
-// Note: Achievement floating button is now defined in App.tsx to avoid duplication

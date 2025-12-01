@@ -130,7 +130,7 @@ function ClassicalChannel({ active, bits }: ClassicalChannelProps) {
 
       {/* Channel label */}
       <Html position={[0, -1.8, 0]} center>
-        <div className="text-yellow-500 text-xs font-semibold">
+        <div className="text-yellow-600 text-xs font-semibold">
           Classical Channel
         </div>
       </Html>
@@ -256,7 +256,6 @@ function Scene({
     }
   }, [step]);
 
-  // Alice's particles
   const aliceParticles = [
     {
       id: "psi",
@@ -271,7 +270,6 @@ function Scene({
     },
   ];
 
-  // Bob's particles
   const bobParticles = [
     {
       id: "b",
@@ -409,7 +407,6 @@ export function QuantumTeleportation3D() {
     const timer = setTimeout(() => {
       const nextStep = steps[currentIndex + 1];
 
-      // Generate random classical bits when measuring
       if (step === "bell_measure") {
         const bits = ["00", "01", "10", "11"][Math.floor(Math.random() * 4)];
         setClassicalBits(bits);
@@ -449,17 +446,17 @@ export function QuantumTeleportation3D() {
 
   return (
     <div className="space-y-4">
-      <div className="h-[450px] relative glass-card rounded-xl overflow-hidden border-2 border-emerald-200">
+      <div className="h-[450px] relative bg-white rounded-xl overflow-hidden border-2 border-emerald-200 shadow-sm">
         <Canvas camera={{ position: [0, 5, 12], fov: 50 }}>
           <Scene step={step} classicalBits={classicalBits} />
         </Canvas>
 
         {/* Step info overlay */}
-        <div className="absolute top-4 left-4 right-4 md:right-auto md:max-w-md bg-black/85 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-emerald-500/30">
-          <p className="text-emerald-400 font-bold mb-1">
+        <div className="absolute top-4 left-4 right-4 md:right-auto md:max-w-md bg-white/95 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg border border-emerald-200">
+          <p className="text-emerald-600 font-bold mb-1">
             {currentStepInfo.title}
           </p>
-          <p className="text-sm text-gray-200">{currentStepInfo.description}</p>
+          <p className="text-sm text-gray-700">{currentStepInfo.description}</p>
         </div>
       </div>
 
@@ -476,8 +473,8 @@ export function QuantumTeleportation3D() {
               step === s
                 ? "bg-emerald-500"
                 : steps.indexOf(step) > i
-                ? "bg-emerald-500/50"
-                : "bg-gray-700"
+                ? "bg-emerald-300"
+                : "bg-gray-200"
             }`}
           />
         ))}
@@ -488,7 +485,7 @@ export function QuantumTeleportation3D() {
         <button
           onClick={handleStepBack}
           disabled={step === "initial"}
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-gray-200"
         >
           ← Back
         </button>
@@ -507,89 +504,99 @@ export function QuantumTeleportation3D() {
         <button
           onClick={handleStepForward}
           disabled={step === "complete"}
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-gray-200"
         >
           Next →
         </button>
 
         <button
           onClick={handleReset}
-          className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-700 transition-all"
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-all border border-gray-200"
         >
           🔄
         </button>
       </div>
 
-      {/* Key points */}
+      {/* Key points - Light mode */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="bg-cyan-950 border border-cyan-500/30 rounded-lg p-3">
-          <div className="text-cyan-400 font-bold text-sm mb-1">
+        <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-lg p-3">
+          <div className="text-cyan-700 font-bold text-sm mb-1">
             ⚡ Not FTL Communication
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-gray-600">
             Classical bits must be sent at light speed or slower. No information
             travels faster than light.
           </div>
         </div>
 
-        <div className="bg-purple-950 border border-purple-500/30 rounded-lg p-3">
-          <div className="text-purple-400 font-bold text-sm mb-1">
+        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-lg p-3">
+          <div className="text-purple-700 font-bold text-sm mb-1">
             🔒 No Cloning
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-gray-600">
             The original state is destroyed during Bell measurement. You can't
             copy quantum states!
           </div>
         </div>
 
-        <div className="bg-orange-950 border border-orange-500/30 rounded-lg p-3">
-          <div className="text-orange-400 font-bold text-sm mb-1">
+        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-lg p-3">
+          <div className="text-orange-700 font-bold text-sm mb-1">
             🔗 Requires Entanglement
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-gray-600">
             Pre-shared entanglement is consumed in the process. One Bell pair
             per teleportation.
           </div>
         </div>
       </div>
 
-      {/* Protocol diagram */}
-      <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
-        <div className="text-gray-500 mb-2">
+      {/* Protocol diagram - Light mode */}
+      <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 font-mono text-xs border-2 border-gray-200 overflow-x-auto">
+        <div className="text-gray-600 mb-2 font-sans font-semibold">
           Quantum Teleportation Protocol:
         </div>
         <div className="space-y-1">
           <div
             className={
-              step === "initial" ? "text-emerald-400" : "text-gray-500"
+              step === "initial"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
             Alice: |ψ⟩ = α|0⟩ + β|1⟩ (Unknown quantum state)
           </div>
           <div
             className={
-              step === "entangle" ? "text-emerald-400" : "text-gray-500"
+              step === "entangle"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
             Entangle: |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 (Bell pair shared)
           </div>
           <div
             className={
-              step === "bell_measure" ? "text-emerald-400" : "text-gray-500"
+              step === "bell_measure"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
             Measure: |ψ⟩⊗|A⟩ → {classicalBits} (2 classical bits)
           </div>
           <div
             className={
-              step === "classical_send" ? "text-emerald-400" : "text-gray-500"
+              step === "classical_send"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
             Send: Alice --({classicalBits})--→ Bob (Classical channel)
           </div>
           <div
             className={
-              step === "apply_correction" ? "text-emerald-400" : "text-gray-500"
+              step === "apply_correction"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
             Correct: Bob applies{" "}
@@ -600,14 +607,16 @@ export function QuantumTeleportation3D() {
               : classicalBits === "10"
               ? "Z"
               : "ZX"}{" "}
-            // Based on bits
+            (Based on bits)
           </div>
           <div
             className={
-              step === "complete" ? "text-emerald-400" : "text-gray-500"
+              step === "complete"
+                ? "text-emerald-600 font-semibold"
+                : "text-gray-500"
             }
           >
-            Result: |B⟩ = |ψ⟩ // Perfect copy!
+            Result: |B⟩ = |ψ⟩ (Perfect copy!)
           </div>
         </div>
       </div>

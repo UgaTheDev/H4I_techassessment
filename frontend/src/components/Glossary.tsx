@@ -190,7 +190,6 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
   },
 ];
 
-// Context for glossary state
 interface GlossaryContextType {
   isOpen: boolean;
   openGlossary: () => void;
@@ -255,7 +254,6 @@ export function useGlossary() {
   return context;
 }
 
-// Inline term with hover tooltip
 export function GlossaryTerm({
   termId,
   children,
@@ -303,7 +301,6 @@ export function GlossaryTerm({
   );
 }
 
-// Full glossary panel
 export function GlossaryPanel({
   isOpen: controlledOpen,
   onClose,
@@ -314,7 +311,6 @@ export function GlossaryPanel({
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
-  // Use controlled state if provided, otherwise use context
   const isOpen =
     controlledOpen !== undefined ? controlledOpen : glossaryContext.isOpen;
   const closeGlossary = onClose || glossaryContext.closeGlossary;
@@ -552,7 +548,6 @@ export function GlossaryPanel({
   );
 }
 
-// Floating glossary button
 export function GlossaryButton() {
   const { openGlossary } = useGlossary();
 

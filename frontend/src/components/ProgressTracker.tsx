@@ -30,13 +30,11 @@ export function ProgressTracker() {
   ]);
 
   useEffect(() => {
-    // Load progress from localStorage
     const savedProgress = localStorage.getItem("pageProgress");
     if (savedProgress) {
       setProgress(JSON.parse(savedProgress));
     }
 
-    // Load open/closed state from localStorage
     const savedState = localStorage.getItem("progressTrackerOpen");
     if (savedState !== null) {
       setIsOpen(JSON.parse(savedState));
@@ -44,7 +42,6 @@ export function ProgressTracker() {
   }, []);
 
   useEffect(() => {
-    // Mark current page as visited
     const updatedProgress = progress.map((page) => {
       if (page.path === location.pathname) {
         return { ...page, visited: true, lastVisited: new Date() };

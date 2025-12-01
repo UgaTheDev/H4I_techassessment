@@ -16,7 +16,6 @@ import {
 } from "@tabler/icons-react";
 import * as THREE from "three";
 
-// ============ 3D HERO VISUALIZATION ============
 function EntangledParticle({
   basePosition,
   color,
@@ -33,16 +32,13 @@ function EntangledParticle({
 
     const t = state.clock.elapsedTime;
 
-    // Orbital motion
     meshRef.current.position.x = basePosition[0] + Math.sin(t * 0.8) * 0.5;
     meshRef.current.position.y = basePosition[1] + Math.cos(t * 1.2) * 0.3;
     meshRef.current.position.z = basePosition[2] + Math.sin(t * 0.5) * 0.4;
 
-    // Pulsing glow
     const scale = 1 + Math.sin(t * 3) * 0.1;
     meshRef.current.scale.set(scale, scale, scale);
 
-    // Trail particle
     if (trailRef.current) {
       trailRef.current.position.x =
         meshRef.current.position.x + Math.cos(t * 2) * 0.3;
@@ -145,7 +141,6 @@ function HeroScene() {
   );
 }
 
-// ============ PROGRESS TRACKER ============
 interface LearningProgress {
   pagesVisited: string[];
   quizzesCompleted: string[];
@@ -232,7 +227,6 @@ function ProgressTracker() {
   );
 }
 
-// ============ TOPIC CARDS ============
 interface TopicCardProps {
   to: string;
   icon: React.ElementType;
@@ -293,7 +287,6 @@ function TopicCard({
   );
 }
 
-// ============ QUICK FACTS CAROUSEL ============
 function QuickFacts() {
   const facts = [
     {
@@ -356,7 +349,6 @@ function QuickFacts() {
   );
 }
 
-// ============ MAIN HOME COMPONENT ============
 export function Home() {
   const scrollToContent = () => {
     document

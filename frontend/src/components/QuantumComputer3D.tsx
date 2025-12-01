@@ -372,19 +372,14 @@ export function QuantumComputer3D() {
     const interval = setInterval(() => {
       setStep((s) => {
         const newStep = (s + 1) % 4;
-
-        // Update qubit states based on circuit step
         setQubits((prev) => {
           const updated = [...prev];
           if (newStep === 0) {
-            // Reset
             return prev.map((q) => ({ ...q, state: "zero" as const }));
           } else if (newStep === 1) {
-            // After Hadamard gates
             updated[0] = { ...updated[0], state: "superposition" };
             updated[2] = { ...updated[2], state: "superposition" };
           } else if (newStep === 2) {
-            // After CNOT gates - entangled!
             updated[0] = { ...updated[0], state: "entangled", partner: 1 };
             updated[1] = { ...updated[1], state: "entangled", partner: 0 };
             updated[2] = { ...updated[2], state: "entangled", partner: 3 };

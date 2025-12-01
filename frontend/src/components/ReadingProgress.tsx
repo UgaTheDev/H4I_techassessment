@@ -29,7 +29,6 @@ export function ReadingProgressBar({
   const startTime = useRef(Date.now());
   const lastScrollPosition = useRef(0);
 
-  // Calculate scroll progress
   useEffect(() => {
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -42,12 +41,11 @@ export function ReadingProgressBar({
         setProgress(newProgress);
         lastScrollPosition.current = scrollTop;
 
-        // Estimate time remaining based on progress and reading speed
         const remainingPercent = (100 - newProgress) / 100;
-        const elapsed = (Date.now() - startTime.current) / 1000 / 60; // minutes
+        const elapsed = (Date.now() - startTime.current) / 1000 / 60;
 
         if (newProgress > 5 && elapsed > 0.1) {
-          const readingSpeed = newProgress / elapsed; // percent per minute
+          const readingSpeed = newProgress / elapsed;
           const remaining = (remainingPercent * 100) / readingSpeed;
           setTimeRemaining(Math.max(0, Math.round(remaining)));
         } else {
@@ -57,12 +55,11 @@ export function ReadingProgressBar({
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial call
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [estimatedMinutes]);
 
-  // Check for existing bookmark
   useEffect(() => {
     const bookmarks: Bookmark[] = JSON.parse(
       localStorage.getItem("quantum-bookmarks") || "[]"
@@ -70,7 +67,6 @@ export function ReadingProgressBar({
     const existing = bookmarks.find((b) => b.pageId === pageId);
     setIsBookmarked(!!existing);
 
-    // If there's a bookmark, offer to restore position
     if (existing && existing.scrollPosition > 100) {
       setShowTooltip(true);
       setTimeout(() => setShowTooltip(false), 5000);
@@ -83,12 +79,10 @@ export function ReadingProgressBar({
     );
 
     if (isBookmarked) {
-      // Remove bookmark
       const filtered = bookmarks.filter((b) => b.pageId !== pageId);
       localStorage.setItem("quantum-bookmarks", JSON.stringify(filtered));
       setIsBookmarked(false);
     } else {
-      // Add bookmark
       const newBookmark: Bookmark = {
         pageId,
         scrollPosition: window.scrollY,
@@ -211,7 +205,6 @@ export function ReadingProgressBar({
   );
 }
 
-// Mobile-friendly floating progress button
 export function ReadingProgressFloating({ pageId }: { pageId: string }) {
   const [progress, setProgress] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -266,7 +259,6 @@ export function ReadingProgressFloating({ pageId }: { pageId: string }) {
     setIsExpanded(false);
   };
 
-  // Only show on mobile/tablet (xl:hidden)
   return (
     <div className="fixed bottom-20 right-6 z-40 xl:hidden">
       {isExpanded && (
@@ -346,7 +338,6 @@ export function ReadingProgressFloating({ pageId }: { pageId: string }) {
   );
 }
 
-// Bookmarks list component
 export function BookmarksList() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 

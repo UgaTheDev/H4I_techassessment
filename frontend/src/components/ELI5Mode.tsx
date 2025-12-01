@@ -141,7 +141,6 @@ export function ExplanationLevelToggle() {
   );
 }
 
-// VERIFIED & ENHANCED explanations - all facts checked against peer-reviewed sources
 export const ELI5_EXPLANATIONS: Record<
   string,
   { eli5: string; normal: string; advanced: string }

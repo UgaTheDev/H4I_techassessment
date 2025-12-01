@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { IconTrophy, IconTarget, IconBrain } from '@tabler/icons-react';
+import { useEffect, useState } from "react";
+import { IconTrophy, IconTarget, IconBrain } from "@tabler/icons-react";
 
 interface QuizAttempt {
   questionId: string;
@@ -17,13 +17,14 @@ export function QuizStats() {
   const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
-    const attempts: QuizAttempt[] = JSON.parse(localStorage.getItem('quizAttempts') || '[]');
-    
-    const correct = attempts.filter(a => a.correct).length;
+    const attempts: QuizAttempt[] = JSON.parse(
+      localStorage.getItem("quizAttempts") || "[]"
+    );
+
+    const correct = attempts.filter((a) => a.correct).length;
     const total = attempts.length;
     const accuracy = total > 0 ? (correct / total) * 100 : 0;
-    
-    // Calculate current streak
+
     let streak = 0;
     for (let i = attempts.length - 1; i >= 0; i--) {
       if (attempts[i].correct) {
@@ -70,7 +71,9 @@ export function QuizStats() {
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
             <div className="flex items-center space-x-2 mb-2">
               <IconTarget className="h-5 w-5 text-blue-600" />
-              <span className="text-xs font-semibold text-blue-700">Accuracy</span>
+              <span className="text-xs font-semibold text-blue-700">
+                Accuracy
+              </span>
             </div>
             <p className="text-2xl font-bold text-blue-900">
               {stats.accuracy.toFixed(0)}%
@@ -80,7 +83,9 @@ export function QuizStats() {
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
             <div className="flex items-center space-x-2 mb-2">
               <IconBrain className="h-5 w-5 text-green-600" />
-              <span className="text-xs font-semibold text-green-700">Streak</span>
+              <span className="text-xs font-semibold text-green-700">
+                Streak
+              </span>
             </div>
             <p className="text-2xl font-bold text-green-900">{stats.streak}</p>
           </div>
@@ -89,11 +94,15 @@ export function QuizStats() {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Total Questions:</span>
-            <span className="font-semibold text-gray-800">{stats.totalAttempts}</span>
+            <span className="font-semibold text-gray-800">
+              {stats.totalAttempts}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Correct Answers:</span>
-            <span className="font-semibold text-green-600">{stats.correctAnswers}</span>
+            <span className="font-semibold text-green-600">
+              {stats.correctAnswers}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Incorrect Answers:</span>

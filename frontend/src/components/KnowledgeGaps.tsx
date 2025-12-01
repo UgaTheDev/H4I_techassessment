@@ -28,12 +28,10 @@ interface TopicPerformance {
   lastAttempt?: string;
 }
 
-// Map question IDs to topics
 const QUESTION_TOPIC_MAP: Record<
   string,
   { topic: string; label: string; path: string }
 > = {
-  // What is Entanglement
   "entanglement-basics-mc-1": {
     topic: "entanglement",
     label: "What is Entanglement?",
@@ -49,8 +47,6 @@ const QUESTION_TOPIC_MAP: Record<
     label: "What is Entanglement?",
     path: "/what-is-entanglement",
   },
-
-  // EPR Paradox
   "epr-paradox-mc-1": {
     topic: "epr",
     label: "EPR Paradox",
@@ -71,8 +67,6 @@ const QUESTION_TOPIC_MAP: Record<
     label: "EPR Paradox",
     path: "/epr-paradox",
   },
-
-  // Bell's Theorem
   "bells-theorem-mc-1": {
     topic: "bells",
     label: "Bell's Theorem",
@@ -93,8 +87,6 @@ const QUESTION_TOPIC_MAP: Record<
     label: "Bell's Theorem",
     path: "/bells-theorem",
   },
-
-  // Famous Experiments
   "experiments-mc-1": {
     topic: "experiments",
     label: "Famous Experiments",
@@ -110,8 +102,6 @@ const QUESTION_TOPIC_MAP: Record<
     label: "Famous Experiments",
     path: "/famous-experiments",
   },
-
-  // Applications
   "applications-qkd-mc": {
     topic: "applications",
     label: "Applications",
@@ -144,46 +134,38 @@ export function useKnowledgeGaps() {
   const [performance, setPerformance] = useState<TopicPerformance[]>([]);
 
   useEffect(() => {
-    // Load quiz attempts from localStorage
     const loadAttempts = () => {
       const saved = localStorage.getItem("quizAttempts");
       if (saved) {
         try {
           const parsed: QuizAttempt[] = JSON.parse(saved);
-          // Add topic info to each attempt
           const withTopics = parsed.map((a) => ({
             ...a,
             topic: QUESTION_TOPIC_MAP[a.questionId]?.topic || "other",
           }));
           setAttempts(withTopics);
-        } catch (e) {
-          // Ignore
-        }
+        } catch (e) {}
       }
     };
 
     loadAttempts();
 
-    // Listen for storage changes
     window.addEventListener("storage", loadAttempts);
     return () => window.removeEventListener("storage", loadAttempts);
   }, []);
 
-  // Calculate performance per topic
   useEffect(() => {
     const topics = new Map<
       string,
       { correct: number; total: number; attempts: QuizAttempt[] }
     >();
 
-    // Initialize all topics
     Object.values(QUESTION_TOPIC_MAP).forEach(({ topic }) => {
       if (!topics.has(topic)) {
         topics.set(topic, { correct: 0, total: 0, attempts: [] });
       }
     });
 
-    // Aggregate attempts
     attempts.forEach((attempt) => {
       const topicInfo = QUESTION_TOPIC_MAP[attempt.questionId];
       if (topicInfo) {
@@ -194,7 +176,6 @@ export function useKnowledgeGaps() {
       }
     });
 
-    // Calculate performance metrics
     const perf: TopicPerformance[] = [];
     topics.forEach((data, topic) => {
       const topicMeta = Object.values(QUESTION_TOPIC_MAP).find(
@@ -202,7 +183,6 @@ export function useKnowledgeGaps() {
       );
       if (!topicMeta || data.total === 0) return;
 
-      // Calculate recent trend (last 5 vs previous 5 attempts)
       const sortedAttempts = [...data.attempts].sort(
         (a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -239,7 +219,6 @@ export function useKnowledgeGaps() {
       });
     });
 
-    // Sort by accuracy (weakest first)
     perf.sort((a, b) => a.accuracy - b.accuracy);
     setPerformance(perf);
   }, [attempts]);
@@ -262,7 +241,6 @@ export function useKnowledgeGaps() {
   };
 }
 
-// Main Knowledge Gap Panel
 export function KnowledgeGapPanel({
   isOpen,
   onClose,
@@ -283,7 +261,6 @@ export function KnowledgeGapPanel({
       />
 
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -303,7 +280,6 @@ export function KnowledgeGapPanel({
             </button>
           </div>
 
-          {/* Overall accuracy */}
           <div className="mt-4 bg-white/20 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <span>Overall Accuracy</span>
@@ -334,7 +310,6 @@ export function KnowledgeGapPanel({
             </div>
           ) : (
             <>
-              {/* Weak Areas */}
               {weakAreas.length > 0 && (
                 <div className="mb-6">
                   <h3 className="flex items-center gap-2 text-amber-700 font-semibold mb-3">
@@ -376,7 +351,6 @@ export function KnowledgeGapPanel({
                 </div>
               )}
 
-              {/* All Topics Performance */}
               <div>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
                   All Topics
@@ -422,7 +396,6 @@ export function KnowledgeGapPanel({
                 </div>
               </div>
 
-              {/* Strong Areas */}
               {strongAreas.length > 0 && (
                 <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
                   <h3 className="flex items-center gap-2 text-green-700 font-semibold mb-2">
@@ -439,7 +412,6 @@ export function KnowledgeGapPanel({
           )}
         </div>
 
-        {/* Reset button */}
         {attempts.length > 0 && (
           <div className="p-4 border-t border-gray-200">
             <button
@@ -448,9 +420,7 @@ export function KnowledgeGapPanel({
                   localStorage.removeItem("quizAttempts");
                   localStorage.removeItem("quantum-user-stats");
                   localStorage.removeItem("quantum-learning-progress");
-                  // Force re-render by dispatching storage event
                   window.dispatchEvent(new Event("storage"));
-                  // Also reload the page to reset all state
                   window.location.reload();
                 }
               }}
@@ -466,19 +436,16 @@ export function KnowledgeGapPanel({
   );
 }
 
-// Inline suggestion card for weak areas
 export function ReviewSuggestion() {
   const { weakAreas } = useKnowledgeGaps();
   const location = useLocation();
 
   if (weakAreas.length === 0) return null;
 
-  // Check if current page is one of the weak areas
   const currentWeakArea = weakAreas.find(
     (area) => area.path === location.pathname
   );
 
-  // If on a weak area page, show encouragement
   if (currentWeakArea) {
     return (
       <div className="glass-card rounded-xl p-4 mb-6 border-2 border-blue-300 bg-blue-50">
@@ -500,7 +467,6 @@ export function ReviewSuggestion() {
     );
   }
 
-  // Otherwise show suggestion for weakest area
   const weakest = weakAreas[0];
 
   return (

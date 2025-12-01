@@ -42,7 +42,7 @@ export function MatchingGame({
   };
 
   const handleTermClick = (termId: string) => {
-    if (results[termId] === true) return; // Already correctly matched
+    if (results[termId] === true) return;
     setSelectedTerm(selectedTerm === termId ? null : termId);
   };
 
@@ -52,22 +52,18 @@ export function MatchingGame({
       Object.values(matches).includes(defId) &&
       matches[selectedTerm] !== defId
     ) {
-      // Definition already matched to another term
       return;
     }
 
     setAttempts((prev) => prev + 1);
 
-    // Record the match
     const newMatches = { ...matches, [selectedTerm]: defId };
     setMatches(newMatches);
 
-    // Check if correct
     const isCorrect = selectedTerm === defId;
     setResults((prev) => ({ ...prev, [selectedTerm]: isCorrect }));
     setSelectedTerm(null);
 
-    // Check if game complete
     const allMatched = Object.keys(newMatches).length === items.length;
     if (allMatched) {
       const correctCount = Object.values({
@@ -76,7 +72,6 @@ export function MatchingGame({
       }).filter(Boolean).length;
       setIsComplete(true);
 
-      // Dispatch event for progress tracking
       window.dispatchEvent(
         new CustomEvent("quizComplete", {
           detail: {
@@ -197,7 +192,6 @@ export function MatchingGame({
           </div>
         </div>
 
-        {/* Definitions */}
         <div>
           <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <span className="w-6 h-6 rounded bg-entangled-500 text-white flex items-center justify-center text-xs">

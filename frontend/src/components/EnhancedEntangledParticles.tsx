@@ -497,7 +497,7 @@ export function EnhancedEntangledParticles() {
             </p>
             <p className="pt-2 border-t border-gray-200">
               <strong>The Magic:</strong> Measuring one particle instantly
-              determines the other's opposite spin — even across the universe!
+              determines the other's opposite spin regardless of distance.
             </p>
           </div>
         </div>

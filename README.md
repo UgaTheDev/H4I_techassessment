@@ -32,7 +32,7 @@ An interactive educational website exploring quantum entanglement, built for Hac
 ### Prerequisites
 
 - Node.js 18+ and npm
-- PostgreSQL 14+ (or a free Neon/Supabase account)
+- PostgreSQL 14+
 - Google Gemini API key
 
 ### Database Setup (Choose One)

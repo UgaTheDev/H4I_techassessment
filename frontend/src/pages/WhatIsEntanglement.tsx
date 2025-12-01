@@ -122,11 +122,11 @@ export function WhatIsEntanglement() {
           </h2>
           <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
-              Imagine you have a pair of magical dice. You give one die to your
+              Imagine you have a pair of magical dice. You give one dice to your
               friend Alice and keep the other yourself. Alice travels to Mars
-              while you stay on Earth. When you roll your die and get a 6,
-              Alice's die —<em> at that exact same instant</em> — shows a 1.
-              Every single time. No matter how far apart you are.
+              while you stay on Earth. When you roll your dice and get a 6,
+              Alice's dice, at that exact same instant, shows a 1. Every single
+              time. No matter how far apart you are.
             </p>
             <p>
               That's essentially what quantum entanglement is, except with
@@ -188,7 +188,7 @@ export function WhatIsEntanglement() {
                   <span className="text-quantum-600 font-bold">•</span>
                   <span>
                     <strong>Non-locality:</strong> This correlation happens
-                    regardless of distance — even across galaxies
+                    regardless of distance.
                   </span>
                 </li>
               </ul>

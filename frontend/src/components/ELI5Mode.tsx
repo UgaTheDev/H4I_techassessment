@@ -147,7 +147,7 @@ export const ELI5_EXPLANATIONS: Record<
   { eli5: string; normal: string; advanced: string }
 > = {
   entanglement: {
-    eli5: `Imagine you have two magic coins. You flip one coin, and it lands on heads. At that EXACT moment, no matter how far away the other coin is — even on the moon! — it will land on tails. Every. Single. Time.
+    eli5: `Imagine you have two magic coins. You flip one coin, and it lands on heads. At that EXACT moment, no matter how far away the other coin is, it will land on tails. Every. Single. Time.
 
 That's quantum entanglement! Two tiny particles get "connected" in a special way. When you look at one particle, you instantly know what the other one is doing.
 

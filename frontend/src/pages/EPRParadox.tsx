@@ -137,8 +137,8 @@ export function EPRParadox() {
               The paper presented a thought experiment designed to show that
               quantum mechanics leads to absurd conclusions. If quantum
               mechanics is correct, they argued, then measuring one particle
-              would instantly affect another particle arbitrarily far away —
-              what Einstein dismissively called{" "}
+              would instantly affect another particle arbitrarily far away. This
+              is what Einstein dismissively called{" "}
               <strong>"spooky action at a distance."</strong>
             </p>
             <div className="bg-gradient-to-r from-red-50 to-rose-50 border-l-4 border-red-500 p-6 rounded-r-xl">

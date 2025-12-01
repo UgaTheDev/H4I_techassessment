@@ -259,10 +259,8 @@ function AppContent() {
                   <div className="text-gray-500">Quizzes</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-400">
-                    {unlockedAchievements.size}
-                  </div>
-                  <div className="text-gray-500">Achievements Completed!</div>
+                  <div className="text-2xl font-bold text-green-400">13</div>
+                  <div className="text-gray-500">Achievements</div>
                 </div>
               </div>
 

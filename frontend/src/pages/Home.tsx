@@ -386,16 +386,17 @@ export function Home() {
           </div>
 
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
-            <span className="text-white drop-shadow-lg">Quantum</span>
-            <br />
             <span className="bg-gradient-to-r from-quantum-400 to-entangled-400 bg-clip-text text-transparent drop-shadow-lg">
-              Entanglement
+              Spooky
+            </span>
+            <br />
+            <span className="text-white drop-shadow-lg">
+              Action at a Distance
             </span>
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow">
-            The phenomenon Einstein called "spooky action at a distance" — and
-            why it's revolutionizing technology
+            Quantum Entanglement and why it's revolutionizing technology
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

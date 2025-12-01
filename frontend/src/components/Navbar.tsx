@@ -144,10 +144,10 @@ export function Navbar() {
               )}
             </div>
             <span className="font-display font-bold text-xl text-gradient hidden sm:inline">
-              Quantum Entanglement
+              Spooky Action at a Distance
             </span>
             <span className="font-display font-bold text-xl text-gradient sm:hidden">
-              QE
+              SAaaD
             </span>
           </Link>
 

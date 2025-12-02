@@ -2,7 +2,7 @@
 
 > _"Spooky action at a distance"_ — Albert Einstein
 
-An interactive educational website that teaches the fascinating world of quantum entanglement through immersive 3D visualizations, interactive quizzes, and hands-on simulations. Built for Hack4Impact IdeaCon 2025.
+An interactive educational website that teaches the fascinating world of quantum entanglement through immersive 3D visualizations, interactive quizzes, and hands-on simulations. Built for Hack4Impact IdeaCon 2026.
 
 ![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
@@ -254,9 +254,7 @@ VITE_API_URL=http://localhost:5001
 The website is fully responsive:
 
 - 📱 **Mobile** (320px+) - Stacked layouts, touch-friendly
-- 📱 **Tablet** (768px+) - 2-column grids
 - 💻 **Desktop** (1024px+) - Full layouts with sidebars
-- 🖥️ **Large** (1280px+) - Maximum content width
 
 ## 🔬 Learning Outcomes
 
@@ -281,16 +279,7 @@ npm run build
 
 ## 📄 License
 
-This project was created for Hack4Impact IdeaCon 2025.
-
-## 🙏 Acknowledgments
-
-- **Alain Aspect, John Clauser, Anton Zeilinger** - 2022 Nobel Prize winners whose groundbreaking work inspired this project
-- **Hack4Impact Boston University** - For organizing IdeaCon 2025
-- **React Three Fiber** - For making 3D web development accessible
-- **Google Gemini** - For powering the AI grading system
-
----
+This project was created for Hack4Impact IdeaCon 2026.
 
 <p align="center">
   <strong>Made with ❤️ and quantum superposition</strong>
